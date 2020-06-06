@@ -18,6 +18,11 @@ class Line(models.Model):
                                 related_name='clue_lines',
                                 null=True,
                                 default=None)
+    win_message_in = models.ForeignKey(Puzzle,
+                                       on_delete=models.CASCADE,
+                                       related_name='win_message_lines',
+                                       null=True,
+                                       default=None)
 
     def __str__(self):
         return self.text[:self.length]
