@@ -3,7 +3,7 @@ from rest_framework import serializers
 from puzzles.models import Line, Puzzle
 
 
-class LineSerializer(serializers.ModelSerializer):
+class ClueLineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Line
