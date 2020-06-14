@@ -22,4 +22,13 @@ class PuzzleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Puzzle
-        fields = ['id', 'name', 'init_text', 'win_text', 'clue_lines', 'win_message_lines']
+        fields = [
+            'id',
+            'name',
+            'type',
+            'encoding',
+            'init_text',
+            'win_text',
+            'clue_lines',
+            'win_message_lines'
+        ]
