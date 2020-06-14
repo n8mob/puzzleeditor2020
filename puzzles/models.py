@@ -4,6 +4,8 @@ from django.db import models
 class Puzzle(models.Model):
     name = models.CharField(max_length=250)
     line_length = models.PositiveIntegerField(default=13)
+    init_text = models.CharField(max_length=50, default='')
+    win_text = models.CharField(max_length=50, default='')
 
     def __repr__(self):
         return f'Puzzle: {self.name}'
