@@ -17,8 +17,8 @@ class WinMessageLineSerializer(serializers.ModelSerializer):
 
 
 class PuzzleSerializer(serializers.ModelSerializer):
-    clue_lines = serializers.StringRelatedField(many=True)
-    win_message_lines = serializers.StringRelatedField(many=True)
+    clue = serializers.StringRelatedField(many=True)
+    winMessage = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Puzzle
@@ -29,6 +29,6 @@ class PuzzleSerializer(serializers.ModelSerializer):
             'encoding',
             'init_text',
             'win_text',
-            'clue_lines',
-            'win_message_lines'
+            'clue',
+            'winMessage'
         ]

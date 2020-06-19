@@ -53,7 +53,7 @@ class Line(models.Model):
 class ClueLine(Line):
     clue_in = models.ForeignKey(Puzzle,
                                 on_delete=models.CASCADE,
-                                related_name='clue_lines',
+                                related_name='clue',
                                 null=True,
                                 default=None)
 
@@ -61,6 +61,6 @@ class ClueLine(Line):
 class WinMessageLine(Line):
     win_message_in = models.ForeignKey(Puzzle,
                                        on_delete=models.CASCADE,
-                                       related_name='win_message_lines',
+                                       related_name='winMessage',
                                        null=True,
                                        default=None)
