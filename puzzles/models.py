@@ -1,6 +1,14 @@
 from django.db import models
 
 
+class Level(models.Model):
+    levelNumber = models.AutoField(primary_key=True)
+
+    def __str__(self):
+        concat_name = ' '.join(name_line.text for name_line in self.levelName.all())
+        return concat_name if concat_name else f'Level {self.levelNumber}'
+
+
 class Puzzle(models.Model):
     DECODE_TYPE = 'Decode'
     ENCODE_TYPE = 'Encode'
@@ -32,6 +40,11 @@ class Puzzle(models.Model):
     winText = models.CharField(max_length=50, default='', blank=True)
     type = models.CharField(max_length=32, choices=PUZZLE_TYPE_CHOICES)
     encoding = models.CharField(max_length=32, choices=ENCODING_TYPE_CHOICES)
+    level = models.ForeignKey(Level,
+                              on_delete=models.CASCADE,
+                              related_name='puzzles',
+                              null=True,
+                              default=None)
 
     def __repr__(self):
         return f'{self.type} {self.encoding}: {self.name}'
@@ -64,3 +77,11 @@ class WinMessageLine(Line):
                                        related_name='winMessage',
                                        null=True,
                                        default=None)
+
+
+class LevelNameLine(Line):
+    level_name_of = models.ForeignKey(Level,
+                                      on_delete=models.CASCADE,
+                                      related_name='levelName',
+                                      null=True,
+                                      default=None)

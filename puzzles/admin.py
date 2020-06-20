@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from puzzles.models import Puzzle, ClueLine, WinMessageLine
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level
 
 
 @admin.register(ClueLine)
@@ -33,3 +33,14 @@ class PuzzleInlineWinMessageLine(admin.TabularInline):
 class PuzzleAdmin(admin.ModelAdmin):
     inlines = [PuzzleInlineClueLine, PuzzleInlineWinMessageLine]
 
+
+class LevelInlineLevelNameLine(admin.TabularInline):
+    model = LevelNameLine
+    fk_name = 'level_name_of'
+    verbose_name = 'Name Line'
+    verbose_name_plural = 'Name Lines'
+
+
+@admin.register(Level)
+class LevelAdmin(admin.ModelAdmin):
+    inlines = [LevelInlineLevelNameLine]

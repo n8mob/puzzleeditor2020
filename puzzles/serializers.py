@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from puzzles.models import Puzzle, ClueLine, WinMessageLine
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, Level
 
 
 class ClueLineSerializer(serializers.ModelSerializer):
@@ -30,5 +30,16 @@ class PuzzleSerializer(serializers.ModelSerializer):
             'init',
             'winText',
             'clue',
-            'winMessage'
+            'winMessage',
+            'level'
+        ]
+
+
+class LevelSerializer(serializers.ModelSerializer):
+    puzzles = PuzzleSerializer
+
+    class Meta:
+        model = Level
+        fields = [
+            'levelNumber'
         ]
