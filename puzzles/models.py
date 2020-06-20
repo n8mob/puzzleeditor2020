@@ -23,13 +23,13 @@ class Puzzle(models.Model):
         (ALPHA_LENGTH_A1_ENCODING, 'Alpha-Length A1'),
         (THREE_BIT_OCTAL_ENCODING, 'Three-Bit Octal'),
         (FOUR_BIT_HEX_ENCODING, 'Four-Bit Hex'),
-        (FIVE_BIT_A1, 'Five-Bit A1')
+        (FIVE_BIT_A1, 'Five-Bit A1'),
     ]
 
     name = models.CharField(max_length=250)
     line_length = models.PositiveIntegerField(default=13)
-    init_text = models.CharField(max_length=50, default='', blank=True)
-    win_text = models.CharField(max_length=50, default='', blank=True)
+    init = models.CharField(max_length=50, default='', blank=True)
+    winText = models.CharField(max_length=50, default='', blank=True)
     type = models.CharField(max_length=32, choices=PUZZLE_TYPE_CHOICES)
     encoding = models.CharField(max_length=32, choices=ENCODING_TYPE_CHOICES)
 

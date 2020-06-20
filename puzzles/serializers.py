@@ -27,8 +27,8 @@ class PuzzleSerializer(serializers.ModelSerializer):
             'name',
             'type',
             'encoding',
-            'init_text',
-            'win_text',
+            'init',
+            'winText',
             'clue',
             'winMessage'
         ]
