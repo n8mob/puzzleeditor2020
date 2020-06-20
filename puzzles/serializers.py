@@ -19,12 +19,13 @@ class WinMessageLineSerializer(serializers.ModelSerializer):
 class PuzzleSerializer(serializers.ModelSerializer):
     clue = serializers.StringRelatedField(many=True)
     winMessage = serializers.StringRelatedField(many=True)
+    puzzleName = serializers.CharField(source='name')
 
     class Meta:
         model = Puzzle
         fields = [
             'id',
-            'name',
+            'puzzleName',
             'type',
             'encoding',
             'init',
@@ -37,11 +38,12 @@ class PuzzleSerializer(serializers.ModelSerializer):
 
 class LevelSerializer(serializers.ModelSerializer):
     levelName = serializers.StringRelatedField(many=True)
-    puzzles = PuzzleSerializer
+    puzzles = PuzzleSerializer(many=True)
 
     class Meta:
         model = Level
         fields = [
             'levelName',
             'levelNumber',
+            'puzzles',
         ]
