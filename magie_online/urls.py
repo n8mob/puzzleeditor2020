@@ -16,9 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-import puzzles
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('puzzles/', include('puzzles.urls')),
+    path('levels/', include('puzzles.levels_urls'))
 ]

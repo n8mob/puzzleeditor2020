@@ -36,10 +36,12 @@ class PuzzleSerializer(serializers.ModelSerializer):
 
 
 class LevelSerializer(serializers.ModelSerializer):
+    levelName = serializers.StringRelatedField(many=True)
     puzzles = PuzzleSerializer
 
     class Meta:
         model = Level
         fields = [
-            'levelNumber'
+            'levelName',
+            'levelNumber',
         ]
