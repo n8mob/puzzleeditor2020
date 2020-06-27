@@ -34,6 +34,13 @@ class PuzzleAdmin(admin.ModelAdmin):
     inlines = [PuzzleInlineClueLine, PuzzleInlineWinMessageLine]
 
 
+class PuzzleInline(admin.TabularInline):
+    model = Puzzle
+    show_change_link = True
+
+    readonly_fields = ['name', 'init', 'winText', 'type', 'encoding', 'line_length']
+
+
 class LevelInlineLevelNameLine(admin.TabularInline):
     model = LevelNameLine
     fk_name = 'level_name_of'
@@ -43,4 +50,4 @@ class LevelInlineLevelNameLine(admin.TabularInline):
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
-    inlines = [LevelInlineLevelNameLine]
+    inlines = [LevelInlineLevelNameLine, PuzzleInline]
