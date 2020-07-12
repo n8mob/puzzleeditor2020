@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category
 
 
 @admin.register(ClueLine)
@@ -41,7 +41,7 @@ class PuzzleInline(admin.TabularInline):
     readonly_fields = ['name', 'init', 'winText', 'type', 'encoding', 'line_length']
 
 
-class LevelInlineLevelNameLine(admin.TabularInline):
+class LevelNameLinePresenter(admin.TabularInline):
     model = LevelNameLine
     fk_name = 'level_name_of'
     verbose_name = 'Name Line'
@@ -50,4 +50,15 @@ class LevelInlineLevelNameLine(admin.TabularInline):
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
-    inlines = [LevelInlineLevelNameLine, PuzzleInline]
+    inlines = [LevelNameLinePresenter, PuzzleInline]
+
+
+class LevelNamePresenter(admin.TabularInline):
+    model = Level
+
+    readonly_fields = ['__str__']
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = [LevelNamePresenter]
