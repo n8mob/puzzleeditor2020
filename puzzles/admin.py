@@ -40,7 +40,24 @@ class PuzzleInline(admin.TabularInline):
     can_delete = False
     extra = 0
 
-    readonly_fields = ['name', 'init', 'winText', 'type', 'encoding', 'line_length']
+    readonly_fields = ['full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
+    fields = readonly_fields
+
+
+class LevelNameLineInline(admin.TabularInline):
+    model = LevelNameLine
+    fk_name = 'level_name_of'
+    verbose_name = 'Level Name Line'
+    verbose_name_plural = 'Level Name Lines'
+    extra = 0
+
+
+@admin.register(Level)
+class LevelAdmin(admin.ModelAdmin):
+    readonly_fields = ['levelNumber']
+    inlines = [LevelNameLineInline, PuzzleInline]
+
+    fields = ['levelNumber', 'levelVersion', 'category']
 
 
 class LevelNameLinePresenter(admin.TabularInline):
@@ -50,18 +67,13 @@ class LevelNameLinePresenter(admin.TabularInline):
     verbose_name_plural = 'Name Lines'
 
 
-@admin.register(Level)
-class LevelAdmin(admin.ModelAdmin):
-    inlines = [PuzzleInline]
-
-
 class LevelNamePresenter(admin.TabularInline):
     model = Level
     show_change_link = True
     can_delete = False
     extra = 0
 
-    readonly_fields = ['__str__']
+    readonly_fields = ['levelNumber', '__str__', 'levelVersion']
 
 
 @admin.register(Category)

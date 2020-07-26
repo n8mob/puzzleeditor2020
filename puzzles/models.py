@@ -1,9 +1,13 @@
 from django.db import models
 
 
+def concat_lines(relation):
+    return ' '.join(line.text for line in relation.all())
+
+
 class Menu(models.Model):
     name = models.CharField(max_length=250, null=True, blank=True)
-    menuVersion = models.PositiveIntegerField()
+    menuVersion = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -21,11 +25,12 @@ class Category(models.Model):
 
 
 class Level(models.Model):
-    levelNumber = models.AutoField(primary_key=True)
+    levelNumber = models.AutoField(primary_key=True, verbose_name='Level Number')
+    levelVersion = models.PositiveIntegerField(default=1, verbose_name='Level Version')
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        concat_name = ' '.join(name_line.text for name_line in self.levelName.all())
+        concat_name = concat_lines(self.levelName)
         return concat_name if concat_name else f'Level {self.levelNumber}'
 
 
@@ -58,8 +63,8 @@ class Puzzle(models.Model):
     line_length = models.PositiveIntegerField(default=13)
     init = models.CharField(max_length=50, default='', blank=True)
     winText = models.CharField(max_length=50, default='', blank=True)
-    type = models.CharField(max_length=32, choices=PUZZLE_TYPE_CHOICES)
-    encoding = models.CharField(max_length=32, choices=ENCODING_TYPE_CHOICES)
+    type = models.CharField(max_length=32, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
+    encoding = models.CharField(max_length=32, choices=ENCODING_TYPE_CHOICES, default=ALPHA_LENGTH_A1_ENCODING)
     level = models.ForeignKey(Level,
                               on_delete=models.CASCADE,
                               related_name='puzzles',
@@ -70,6 +75,9 @@ class Puzzle(models.Model):
         return f'{self.type} {self.encoding}: {self.name}'
 
     def __str__(self): return self.__repr__()
+
+    def full_clue(self):
+        return concat_lines(self.clue)
 
 
 class Line(models.Model):
