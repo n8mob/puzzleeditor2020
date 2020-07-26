@@ -65,10 +65,9 @@ class Puzzle(models.Model):
 
 class Line(models.Model):
     text = models.CharField(max_length=80)
-    length = models.IntegerField()
 
     def __str__(self):
-        return self.text[:self.length]
+        return self.text
 
     class Meta:
         abstract = True
