@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu
 
 
 @admin.register(ClueLine)
@@ -67,3 +67,19 @@ class LevelNamePresenter(admin.TabularInline):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     inlines = [LevelNamePresenter]
+
+
+class CategoryInline(admin.TabularInline):
+    model = Category
+
+    readonly_fields = ['name']
+
+    show_change_link = True
+    can_delete = False
+    extra = 0
+
+
+@admin.register(Menu)
+class MenuAdmin(admin.ModelAdmin):
+    inlines = [CategoryInline]
+

@@ -1,8 +1,17 @@
 from django.db import models
 
 
+class Menu(models.Model):
+    name = models.CharField(max_length=250, null=True, blank=True)
+    menuVersion = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    menu = models.ForeignKey(Menu, null=True, blank=True, on_delete=models.SET_NULL, related_name='categories')
 
     def __str__(self):
         return self.name
