@@ -20,6 +20,7 @@ class PuzzleInlineClueLine(admin.TabularInline):
     fk_name = 'clue_in'
     verbose_name = 'Clue Line'
     verbose_name_plural = 'Clue Lines'
+    extra = 1
 
 
 class PuzzleInlineWinMessageLine(admin.TabularInline):
@@ -27,13 +28,24 @@ class PuzzleInlineWinMessageLine(admin.TabularInline):
     fk_name = 'win_message_in'
     verbose_name = 'Win Message Line'
     verbose_name_plural = 'Win Message Lines'
+    extra = 1
 
 
 @admin.register(Puzzle)
 class PuzzleAdmin(admin.ModelAdmin):
     inlines = [PuzzleInlineClueLine, PuzzleInlineWinMessageLine]
 
-    list_display = ['name', 'init', 'winText', 'type', 'encoding']
+    @staticmethod
+    def clue(puzzle):
+        return str(puzzle.full_clue()[:25])
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'winText':
+            kwargs['strip'] = False
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+    list_display = ['level', 'name', 'clue', 'winText', 'type', 'encoding']
+    list_display_links = ['name']
 
 
 class PuzzleInline(admin.TabularInline):
@@ -42,7 +54,7 @@ class PuzzleInline(admin.TabularInline):
     can_delete = False
     extra = 0
 
-    readonly_fields = ['full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
+    readonly_fields = ['level', 'full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
     fields = readonly_fields
 
 
@@ -69,7 +81,7 @@ class LevelNameLinePresenter(admin.TabularInline):
     verbose_name_plural = 'Name Lines'
 
 
-class LevelNamePresenter(admin.TabularInline):
+class LevelInline(admin.TabularInline):
     model = Level
     show_change_link = True
     can_delete = False
@@ -84,7 +96,7 @@ class LevelNamePresenter(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    inlines = [LevelNamePresenter]
+    inlines = [LevelInline]
 
 
 class CategoryInline(admin.TabularInline):
@@ -100,4 +112,3 @@ class CategoryInline(admin.TabularInline):
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
     inlines = [CategoryInline]
-
