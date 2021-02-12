@@ -6,7 +6,7 @@ def concat_lines(relation):
 
 
 class Menu(models.Model):
-    name = models.CharField(max_length=250, null=True, blank=True)
+    name = models.SlugField(max_length=250, null=True, blank=True)
     menuVersion = models.PositiveIntegerField(default=1)
 
     def __str__(self):
@@ -27,7 +27,7 @@ class Category(models.Model):
 class Level(models.Model):
     levelNumber = models.AutoField(primary_key=True, verbose_name='Level Number')
     levelVersion = models.PositiveIntegerField(default=1, verbose_name='Level Version')
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='levels')
 
     def __str__(self):
         concat_name = concat_lines(self.levelName)

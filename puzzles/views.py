@@ -1,7 +1,18 @@
 from rest_framework import generics
 
-from puzzles.models import Puzzle, Level
-from puzzles.serializers import PuzzleSerializer, LevelSerializer
+from puzzles.models import Puzzle, Level, Menu
+from puzzles.serializers import PuzzleSerializer, LevelSerializer, MenuSerializer
+
+
+class MenuListView(generics.ListCreateAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+
+class MenuDetailView(generics.RetrieveAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+    lookup_field = 'name'
 
 
 class LevelsListView(generics.ListCreateAPIView):
