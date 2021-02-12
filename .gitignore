@@ -125,3 +125,6 @@ venv/
 
 # PyCharm
 .idea/
+
+# mac
+.DS_Store
