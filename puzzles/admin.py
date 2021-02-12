@@ -33,6 +33,8 @@ class PuzzleInlineWinMessageLine(admin.TabularInline):
 class PuzzleAdmin(admin.ModelAdmin):
     inlines = [PuzzleInlineClueLine, PuzzleInlineWinMessageLine]
 
+    list_display = ['name', 'init', 'winText', 'type', 'encoding']
+
 
 class PuzzleInline(admin.TabularInline):
     model = Puzzle
@@ -73,7 +75,11 @@ class LevelNamePresenter(admin.TabularInline):
     can_delete = False
     extra = 0
 
-    readonly_fields = ['levelNumber', '__str__', 'levelVersion']
+    @staticmethod
+    def level_name(level):
+        return str(level)
+
+    readonly_fields = ['levelNumber', 'level_name', 'levelVersion']
 
 
 @admin.register(Category)
