@@ -1,58 +1,88 @@
-(() => {
-	let lineLength = 0;
-
-	document.addEventListener('DOMContentLoaded', () => {
-		lineLength = getLineLengthInput().value;
-
-		const inputs = document.querySelectorAll('.char-counter-text-input')
-
-		inputs.forEach((input) => {
-			input.addEventListener('input', e => updateCharCountLabel(e.target));
-		});
-
-		getLineLengthInput().addEventListener('change', e => onLineLengthChange(e.target, inputs));
-	});
-
-	function getLineLengthInput() {
-		return document.querySelector('#id_line_length');
+class CharCounter {
+	constructor({inputSelector, lineLengthSelector}) {
+		this.inputSelector = inputSelector;
+		this.lineLengthSelector = lineLengthSelector;
+		this.lineLength = 0;
 	}
 
-	function updateCharCountLabel(input) {
-		const label = findLabel(input);
+	onDomLoaded() {
+		this.selectLineInputs();
+		this.selectLineLengthInput();
+
+		this.listenForLineChanges();
+		this.listenForLineLengthChanges();
+
+		this.lineLength = this.lineLengthInput.value;
+		this.updateLineLabels();
+	}
+
+	selectLineInputs() {
+		this.lineInputs = document.querySelectorAll(this.inputSelector);
+	}
+
+	selectLineLengthInput() {
+		this.lineLengthInput = document.querySelector(this.lineLengthSelector);
+	}
+
+	listenForLineChanges() {
+		this.lineInputs.forEach(input => {
+			input.addEventListener('input', e => this.updateCharCountLabel(e.target));
+		})
+	}
+
+	listenForLineLengthChanges() {
+		this.lineLengthInput.addEventListener('change', e => this.onLineLengthChange(e.target));
+	}
+
+	updateCharCountLabel(input) {
+		const label = this.findLabel(input);
 		const valueLength = input.value.length;
 
-		if (valueLength > lineLength) {
-			addClass(label, 'long');
+		if (valueLength > this.lineLength) {
+			this.addClass(label, 'long');
 		} else {
-			removeClass(label, 'long');
+			this.removeClass(label, 'long');
 		}
 
 		label.textContent = `${valueLength} chars`;
 	}
 
-	function onLineLengthChange(target, inputs) {
-		lineLength = target.value;
+	onLineLengthChange(target) {
+		this.lineLength = target.value;
 
-		inputs.forEach(input => {
-			updateCharCountLabel(input);
+		this.updateLineLabels()
+	}
+
+	updateLineLabels() {
+		this.lineInputs.forEach(input => {
+			this.updateCharCountLabel(input);
 		});
 	}
 
-	function findLabel(eventTarget) {
+	findLabel(eventTarget) {
 		return eventTarget.parentNode.querySelector('.char-counter-text-input + .counter');
 	}
 
-	function addClass(el, className) {
+	addClass(el, className) {
 		if (!el.classList.contains(className)) {
 			el.classList.add(className);
 		}
 	}
 
-	function removeClass(el, className) {
+	removeClass(el, className) {
 		if (el.classList.contains(className)) {
 			el.classList.remove(className);
 		}
 	}
+}
 
+(() => {
+	let charCounter = new CharCounter({
+		inputSelector: '.char-counter-text-input',
+		lineLengthSelector: '#id_line_length',
+	});
+
+	document.addEventListener('DOMContentLoaded', () => {
+		charCounter.onDomLoaded();
+	});
 })();
-
