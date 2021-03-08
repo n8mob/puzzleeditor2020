@@ -11,6 +11,6 @@ class CharCounterTextInput(forms.widgets.TextInput):
 		if not value:
 			value = ''
 
-		charcounter_html = f"<div class=\"counter\"><span class=\"input-counter\">{len(value)}</span> chars</div>"
+		charcounter_html = f'<div class="counter"><span class="input-counter">{len(value)}</span> chars</div>'
 
 		return (f"{textinput_html}{charcounter_html}")
