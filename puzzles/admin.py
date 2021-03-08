@@ -1,21 +1,21 @@
 from django.contrib import admin
+from django.db import models
 
 # Register your models here.
 from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu
-
-
-@admin.register(ClueLine)
-class ClueLineAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(WinMessageLine)
-class WinMessageLineAdmin(admin.ModelAdmin):
-    pass
-
+from char_counter.widget import CharCounterTextInput
 
 class PuzzleInlineClueLine(admin.TabularInline):
     model = ClueLine
+
+    formfield_overrides = {
+        models.CharField: {'widget': CharCounterTextInput}
+    }
+    class Media:
+        css = {
+            'all': ('char_counter/css/char_counter.css', )
+        }
+        js = ('char_counter/js/char_counter.js', )
 
     fk_name = 'clue_in'
     verbose_name = 'Clue Line'
