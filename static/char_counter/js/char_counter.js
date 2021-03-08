@@ -1,52 +1,58 @@
-let LineLengthSettingSingleton = 0;
+(() => {
+	let lineLength = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-	LineLengthSettingSingleton = getLineLength();
+	document.addEventListener('DOMContentLoaded', () => {
+		lineLength = getLineLengthInput().value;
 
-	const inputs = document.querySelectorAll('.char-counter-text-input')
+		const inputs = document.querySelectorAll('.char-counter-text-input')
 
-	inputs.forEach((input) => {
-		input.addEventListener('input', e => updateCharCountLabel(e.target));
+		inputs.forEach((input) => {
+			input.addEventListener('input', e => updateCharCountLabel(e.target));
+		});
+
+		getLineLengthInput().addEventListener('change', e => onLineLengthChange(e.target, inputs));
 	});
 
-	document.querySelector('#id_line_length').addEventListener('change', (e) => {
-		LineLengthSettingSingleton = e.target.value;
+	function getLineLengthInput() {
+		return document.querySelector('#id_line_length');
+	}
+
+	function updateCharCountLabel(input) {
+		const label = findLabel(input);
+		const valueLength = input.value.length;
+
+		if (valueLength > lineLength) {
+			addClass(label, 'long');
+		} else {
+			removeClass(label, 'long');
+		}
+
+		label.textContent = `${valueLength} chars`;
+	}
+
+	function onLineLengthChange(target, inputs) {
+		lineLength = target.value;
 
 		inputs.forEach(input => {
-			updateCharCountLabel(input)
-		})
-	});
-})
-
-function updateCharCountLabel(input) {
-	const label = findLabel(input);
-	const valueLength = input.value.length;
-
-	if (valueLength > LineLengthSettingSingleton) {
-		addClass(label, 'long');
-	} else {
-		removeClass(label, 'long');
+			updateCharCountLabel(input);
+		});
 	}
 
-	label.textContent = `${valueLength} chars`;
-}
-
-function findLabel(eventTarget) {
-	return eventTarget.parentNode.querySelector('.char-counter-text-input + .counter');
-}
-
-function getLineLength() {
-	return document.querySelector('#id_line_length').value;
-}
-
-function addClass(el, className) {
-	if (!el.classList.contains(className)) {
-		el.classList.add(className);
+	function findLabel(eventTarget) {
+		return eventTarget.parentNode.querySelector('.char-counter-text-input + .counter');
 	}
-}
 
-function removeClass(el, className) {
-	if (el.classList.contains(className)) {
-		el.classList.remove(className);
+	function addClass(el, className) {
+		if (!el.classList.contains(className)) {
+			el.classList.add(className);
+		}
 	}
-}
+
+	function removeClass(el, className) {
+		if (el.classList.contains(className)) {
+			el.classList.remove(className);
+		}
+	}
+
+})();
+

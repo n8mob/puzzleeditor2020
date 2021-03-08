@@ -5,17 +5,6 @@ from django.db import models
 from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu
 from char_counter.widget import CharCounterTextInput
 
-
-# @admin.register(ClueLine)
-# class ClueLineAdmin(admin.ModelAdmin):
-#     pass
-
-
-# @admin.register(WinMessageLine)
-# class WinMessageLineAdmin(admin.ModelAdmin):
-#     pass
-
-
 class PuzzleInlineClueLine(admin.TabularInline):
     model = ClueLine
 
