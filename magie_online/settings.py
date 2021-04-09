@@ -27,6 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
+    'magie-editor.us-west-2.elasticbeanstalk.com',
 ]
 
 # Application definition
