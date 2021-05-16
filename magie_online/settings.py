@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'puzzleeditor2020-env.eba-47ymdsph.us-west-2.elasticbeanstalk.com',
+    'Puzzleeditor2020-env.eba-47ymdsph.us-west-2.elasticbeanstalk.com',
     'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
     'magie-editor.us-west-2.elasticbeanstalk.com',
 ]
