@@ -69,7 +69,12 @@ class Puzzle(models.Model):
                               on_delete=models.CASCADE,
                               related_name='puzzles',
                               null=True,
-                              default=None)
+                              blank=True,
+                              default=None,
+                              )
+
+    class Meta:
+        ordering = ['name']
 
     def __repr__(self):
         return f'{self.type} {self.encoding}: {self.name}'
