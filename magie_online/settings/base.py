@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import logging
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -50,6 +50,8 @@ LOGGING = {
         },
     },
 }
+
+logging.error('Logging has been configured')
 
 ALLOWED_HOSTS = [
     'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
