@@ -36,10 +36,15 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': '/opt/python/log/django.log',
         },
+        'varlog': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/app-logs/django.log'
+        }
     },
     'loggers': {
         '': {
-            'handlers': ['file'],
+            'handlers': ['file', 'varlog'],
             'level': 'DEBUG',
             'propagate': True,
         },
