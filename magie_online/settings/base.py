@@ -43,7 +43,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        '': {
+        'root': {
             'handlers': ['file', 'varlog'],
             'level': 'DEBUG',
             'propagate': True,
