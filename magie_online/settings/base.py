@@ -26,32 +26,33 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/opt/python/log/django.log',
-        },
-        'varlog': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/app-logs/django.log'
-        }
-    },
-    'loggers': {
-        'root': {
-            'handlers': ['file', 'varlog'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-
-logging.error('Logging has been configured')
+#
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': '/opt/python/log/django.log',
+#         },
+#         'varlog': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': '/var/log/app-logs/django.log'
+#         },
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'root': {
+#             'handlers': ['file', 'varlog', 'console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
 
 ALLOWED_HOSTS = [
     'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
