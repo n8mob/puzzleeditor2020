@@ -5,12 +5,14 @@ from django.db import models
 from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu
 from char_counter.widget import CharCounterTextInput
 
+
 class PuzzleInlineClueLine(admin.TabularInline):
     model = ClueLine
 
     formfield_overrides = {
         models.CharField: {'widget': CharCounterTextInput}
     }
+
     class Media:
         css = {
             'all': ('char_counter/css/char_counter.css', )
@@ -21,6 +23,7 @@ class PuzzleInlineClueLine(admin.TabularInline):
     verbose_name = 'Clue Line'
     verbose_name_plural = 'Clue Lines'
     extra = 1
+    ordering = ('sort_order',)
 
 
 class PuzzleInlineWinMessageLine(admin.TabularInline):
