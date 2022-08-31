@@ -87,6 +87,7 @@ class Puzzle(models.Model):
 
 class Line(models.Model):
     text = models.CharField(max_length=80)
+    sort_order = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.text
