@@ -32,6 +32,7 @@ class PuzzleInlineWinMessageLine(admin.TabularInline):
     verbose_name = 'Win Message Line'
     verbose_name_plural = 'Win Message Lines'
     extra = 1
+    ordering = ('sort_order',)
 
 
 @admin.register(Puzzle)
@@ -50,6 +51,7 @@ class PuzzleAdmin(admin.ModelAdmin):
     list_display = ['puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
     list_editable = ['puzzle_number']
     list_display_links = ['name']
+    ordering = ('puzzle_number',)
 
 
 class PuzzleInline(admin.TabularInline):

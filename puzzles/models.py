@@ -75,7 +75,7 @@ class Puzzle(models.Model):
                               )
 
     class Meta:
-        ordering = ['name']
+        ordering = ['puzzle_number']
 
     def __repr__(self):
         return f'{self.type} {self.encoding}: {self.name}'
