@@ -23,7 +23,6 @@ class PuzzleInlineClueLine(admin.TabularInline):
     verbose_name = 'Clue Line'
     verbose_name_plural = 'Clue Lines'
     extra = 1
-    ordering = ('sort_order',)
 
 
 class PuzzleInlineWinMessageLine(admin.TabularInline):
