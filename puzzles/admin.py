@@ -72,12 +72,16 @@ class LevelNameLineInline(admin.TabularInline):
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
-    readonly_fields = ['levelNumber']
+    readonly_fields = ['levelNumber', 'level_name']
     inlines = [LevelNameLineInline, PuzzleInline]
 
+    @staticmethod
+    def level_name(level):
+        return str(level)
+
     list_editable = ['category']
-    list_display = ['levelNumber', 'levelVersion', 'category']
-    list_display_links = ['levelNumber']
+    list_display = ['levelNumber', 'level_name', 'levelVersion', 'category']
+    list_display_links = ['levelNumber', 'level_name']
     fields = ['levelNumber', 'levelVersion', 'category']
 
 
