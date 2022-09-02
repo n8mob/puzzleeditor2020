@@ -59,6 +59,7 @@ class Puzzle(models.Model):
         (FIVE_BIT_A1, 'Five-Bit A1'),
     ]
 
+    puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
     name = models.CharField(max_length=250)
     line_length = models.PositiveIntegerField(default=13)
     init = models.CharField(max_length=50, default='', blank=True)

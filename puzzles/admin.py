@@ -47,7 +47,8 @@ class PuzzleAdmin(admin.ModelAdmin):
             kwargs['strip'] = False
         return super().formfield_for_dbfield(db_field, request, **kwargs)
 
-    list_display = ['level', 'name', 'clue', 'winText', 'type', 'encoding']
+    list_display = ['puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
+    list_editable = ['puzzle_number']
     list_display_links = ['name']
 
 
@@ -74,6 +75,9 @@ class LevelAdmin(admin.ModelAdmin):
     readonly_fields = ['levelNumber']
     inlines = [LevelNameLineInline, PuzzleInline]
 
+    list_editable = ['category']
+    list_display = ['levelNumber', 'levelVersion', 'category']
+    list_display_links = ['levelNumber']
     fields = ['levelNumber', 'levelVersion', 'category']
 
 
