@@ -58,7 +58,7 @@ class PuzzleInline(admin.TabularInline):
     can_delete = False
     extra = 0
 
-    readonly_fields = ['level', 'full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
+    readonly_fields = ['puzzle_number', 'level', 'full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
     fields = readonly_fields
 
 
