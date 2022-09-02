@@ -95,6 +95,7 @@ class Line(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['sort_order']
 
 
 class ClueLine(Line):
