@@ -15,9 +15,9 @@ class PuzzleInlineClueLine(admin.TabularInline):
 
     class Media:
         css = {
-            'all': ('char_counter/css/char_counter.css', )
+            'all': ('css/char_counter.css', )
         }
-        js = ('char_counter/js/char_counter.js', )
+        js = ('js/char_counter.js', )
 
     fk_name = 'clue_in'
     verbose_name = 'Clue Line'

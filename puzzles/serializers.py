@@ -45,6 +45,7 @@ class LevelSerializer(serializers.ModelSerializer):
         fields = [
             'levelName',
             'levelNumber',
+            'levelVersion',
             'puzzles',
         ]
 
