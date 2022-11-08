@@ -112,11 +112,11 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler'
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/opt/python/log/django.log',
-        },
+        # 'file': {
+        #     'level': 'INFO',
+        #     'class': 'logging.FileHandler',
+        #     'filename': '/opt/python/log/django.log',
+        # },
     },
     'loggers': {
         'root': {
