@@ -28,6 +28,10 @@ class Level(models.Model):
     levelNumber = models.AutoField(primary_key=True, verbose_name='Level Number')
     levelVersion = models.PositiveIntegerField(default=1, verbose_name='Level Version')
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='levels')
+    sort_order = models.PositiveIntegerField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['sort_order']
 
     def __str__(self):
         concat_name = concat_lines(self.levelName)

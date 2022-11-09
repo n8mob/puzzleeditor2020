@@ -89,8 +89,8 @@ class LevelAdmin(admin.ModelAdmin):
     def level_name(level):
         return str(level)
 
-    list_editable = ['category']
-    list_display = ['levelNumber', 'level_name', 'levelVersion', 'category']
+    list_editable = ['category', 'sort_order']
+    list_display = ['levelNumber', 'sort_order', 'level_name', 'levelVersion', 'category']
     list_display_links = ['levelNumber', 'level_name']
     fields = ['levelNumber', 'levelVersion', 'category']
 
