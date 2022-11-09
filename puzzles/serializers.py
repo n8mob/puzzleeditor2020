@@ -46,6 +46,7 @@ class LevelSerializer(serializers.ModelSerializer):
             'levelName',
             'levelNumber',
             'levelVersion',
+            'sort_order',
             'puzzles',
         ]
 
