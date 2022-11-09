@@ -126,4 +126,4 @@ LOGGING = {
     },
 }
 
-STATIC_ROOT = '/static/'
+STATIC_URL = '/static/'
