@@ -12,8 +12,6 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
-    'magie-editor.us-west-2.elasticbeanstalk.com',
     'localhost',
     '127.0.0.1',
 ]
