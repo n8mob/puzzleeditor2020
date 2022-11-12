@@ -16,12 +16,14 @@ class Menu(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=50)
     menu = models.ForeignKey(Menu, null=True, blank=True, on_delete=models.SET_NULL, related_name='categories')
+    sort_order = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = 'Categories'
+        ordering = ['sort_order']
 
 
 class Level(models.Model):

@@ -68,6 +68,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = [
             'levels',
+            'sort_order',
         ]
 
 

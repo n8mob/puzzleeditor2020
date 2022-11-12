@@ -112,6 +112,9 @@ class LevelInline(admin.TabularInline):
 class CategoryAdmin(admin.ModelAdmin):
     inlines = [LevelInline]
 
+    list_display = ['name', 'menu', 'sort_order']
+    list_editable = ['menu', 'sort_order']
+
 
 class CategoryInline(admin.TabularInline):
     model = Category
