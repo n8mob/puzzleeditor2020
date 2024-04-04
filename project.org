@@ -1,0 +1,12 @@
+#+title: Tasks and Plans for the MAGiE Puzzle Editor
+
+* TODO Add Encodings
+
+** TODO Create Encoding Entity model
+
+** TODO Add encodings to the top level of
+
+** TODO Migrate puzzle.encoding to a foreign-key reference
+
+** TODO Ensure that all puzzles link to an encoding
+
