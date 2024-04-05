@@ -13,6 +13,11 @@ class Menu(models.Model):
         return self.name
 
 
+class MenuFile(models.Model):
+  menu = models.ForeignKey(Menu, null=True, blank=True, on_delete=models.SET_NULL)
+  file = models.FileField()
+
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
     menu = models.ForeignKey(Menu, null=True, blank=True, on_delete=models.SET_NULL, related_name='categories')

@@ -1,5 +1,6 @@
 
 from django import forms
+from django.utils.safestring import mark_safe
 
 
 class CharCounterTextInput(forms.widgets.TextInput):
@@ -13,4 +14,4 @@ class CharCounterTextInput(forms.widgets.TextInput):
 
 		charcounter_html = f'<div class="counter"><span class="input-counter">{len(value)}</span> chars</div>'
 
-		return f"{textinput_html}{charcounter_html}"
+		return mark_safe(f"{textinput_html}{charcounter_html}")
