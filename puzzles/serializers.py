@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
@@ -117,10 +118,21 @@ class MenuSerializer(serializers.ModelSerializer):
         for puzzle in level_puzzles:
           clue_lines = puzzle.pop('clue')
           win_message_lines = puzzle.pop('winMessage')
+
           if 'puzzleName' in puzzle:
             puzzle['name'] = puzzle.pop('puzzleName')
 
-          new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
+          if 'level' in puzzle:
+            del puzzle['level']
+
+          if 'id' in puzzle:
+            puzzle['puzzle_number'] = puzzle.pop('id')
+
+          try:
+            new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
+          except IntegrityError as in_e:
+            print(f'{in_e} error creating puzzle: {puzzle}')
+            raise
 
           for sort_order, clue_line in enumerate(clue_lines):
             ClueLine.objects.create(clue_in=new_puzzle, text=clue_line, sort_order=sort_order)
