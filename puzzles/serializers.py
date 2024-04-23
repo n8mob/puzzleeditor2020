@@ -1,3 +1,5 @@
+import logging
+
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
@@ -81,6 +83,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
+  log = logging.getLogger(__name__)
   categories = SerializerMethodField(method_name='get_categories')
 
   @staticmethod
@@ -131,7 +134,7 @@ class MenuSerializer(serializers.ModelSerializer):
           try:
             new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
           except IntegrityError as in_e:
-            print(f'{in_e} error creating puzzle: {puzzle}')
+            self.log.error(f'{in_e} while creating {puzzle}')
             raise
 
           for sort_order, clue_line in enumerate(clue_lines):
