@@ -3,7 +3,7 @@ from django.db import models
 import json
 
 # Register your models here.
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu, MenuFile
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu, MenuFile, Encoding
 from char_counter.widget import CharCounterTextInput
 from puzzles.serializers import MenuSerializer, CategorySerializer
 
@@ -51,9 +51,10 @@ class PuzzleAdmin(admin.ModelAdmin):
       kwargs['strip'] = False
     return super().formfield_for_dbfield(db_field, request, **kwargs)
 
-  list_display = ['puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
+  list_display = ['id', 'puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
   list_editable = ['puzzle_number']
-  list_display_links = ['name']
+  list_filter = ['level', 'level__category', 'type']
+  list_display_links = ['id', 'name', 'clue', 'winText']
   ordering = ('puzzle_number',)
 
 
@@ -94,6 +95,7 @@ class LevelAdmin(admin.ModelAdmin):
   list_editable = ['category', 'sort_order']
   list_display = ['levelNumber', 'sort_order', 'levelVersion', 'level_name', 'category']
   list_display_links = ['levelNumber', 'level_name']
+  list_filter = ['category', 'category__menu']
   fields = ['levelNumber', 'levelVersion', 'category']
 
 
@@ -116,6 +118,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
   list_display = ['name', 'menu', 'sort_order']
   list_editable = ['menu', 'sort_order']
+  list_filter = ['menu']
 
 
 class CategoryInline(admin.TabularInline):
@@ -131,6 +134,18 @@ class CategoryInline(admin.TabularInline):
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
   inlines = [CategoryInline]
+
+
+class MenuInline(admin.TabularInline):
+  model = Menu.encodings.through
+  extra = 0
+
+
+@admin.register(Encoding)
+class EncodingAdmin(admin.ModelAdmin):
+  list_display = ['encoding_id', 'encoding_type']
+  list_editable = ['encoding_type']
+  inlines = [MenuInline]
 
 
 @admin.register(MenuFile)
@@ -151,4 +166,3 @@ class MenuFileUpload(admin.ModelAdmin):
       existing_menu = menus_by_name.get()
       print(f'existing: {existing_menu}')
       print(f'TODO: Update with {menu_json}')
-

@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, Level, Menu, Category, LevelNameLine
+from puzzles.models import Puzzle, ClueLine, WinMessageLine, Level, Menu, Category, LevelNameLine, Encoding
 
 SORT_ORDER = 'sort_order'
 
@@ -61,6 +61,7 @@ class LevelSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
     Level.objects.create(**validated_data)
 
+
 class CategoryListSerializer(serializers.ListSerializer):
   def update(self, instance, validated_data):
     pass
@@ -82,19 +83,35 @@ class CategorySerializer(serializers.ModelSerializer):
     ]
 
 
+class EncodingSerializer(serializers.ModelSerializer):
+  type = serializers.CharField(source='encoding_type')
+  class Meta:
+    model = Encoding
+    fields = [
+      'type',
+      'encoding'
+    ]
+
+
 class MenuSerializer(serializers.ModelSerializer):
   log = logging.getLogger(__name__)
   categories = SerializerMethodField(method_name='get_categories')
+  encodings = SerializerMethodField(method_name='get_encodings')
 
   @staticmethod
   def get_categories(menu):
     return {c.name: CategorySerializer().to_representation(instance=c) for c in menu.categories.all()}
+
+  @staticmethod
+  def get_encodings(menu):
+    return {e.encoding_id: EncodingSerializer().to_representation(instance=e) for e in menu.encodings.all()}
 
   class Meta:
     model = Menu
     fields = [
       'name',
       'menuVersion',
+      'encodings',
       'categories'
     ]
 
@@ -102,6 +119,11 @@ class MenuSerializer(serializers.ModelSerializer):
     categories = validated_data.pop('categories')
     encodings = validated_data.pop('encodings')
     menu = Menu.objects.create(**validated_data)
+
+    for encoding_json in encodings:
+      new_encoding = Encoding.objects.create(**encoding_json)
+      new_encoding.menus.add(menu)
+
     for given_category_order, category_name in enumerate(categories):
       category = categories[category_name]
       category['name'] = category_name
@@ -116,8 +138,8 @@ class MenuSerializer(serializers.ModelSerializer):
         if SORT_ORDER not in level:
           level[SORT_ORDER] = given_level_order
         new_level = Level.objects.create(category=category, **level)
-        for sort_order, name_line in enumerate(level_name_lines):
-          LevelNameLine.objects.create(level_name_of=new_level, text=name_line, sort_order=sort_order)
+        for sort_order, level_name_line in enumerate(level_name_lines):
+          LevelNameLine.objects.create(level_name_of=new_level, text=level_name_line, sort_order=sort_order)
         for puzzle in level_puzzles:
           clue_lines = puzzle.pop('clue')
           win_message_lines = puzzle.pop('winMessage')
