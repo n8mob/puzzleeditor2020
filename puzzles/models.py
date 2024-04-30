@@ -100,6 +100,8 @@ class Puzzle(models.Model):
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
 
+  encoding = models.ForeignKey(Encoding, null=True, blank=True, on_delete=models.SET_NULL, related_name='puzzles')
+
   encoding_name = models.CharField(
     max_length=CHOICE_TYPE_LENGTH,
     choices=ENCODINGS,
