@@ -26,7 +26,6 @@ ALPHA_LENGTH_A1_ENCODING = 'AlphaLengthA1'
 THREE_BIT_OCTAL_ENCODING = 'ThreeBitOctal'
 FOUR_BIT_HEX_ENCODING = '4bHex'
 FIVE_BIT_A1 = '5bA1'
-XOR = 'xor'
 
 ENCODINGS = {
   SINGLE_BIT_ENCODING: 'Single Bit',
@@ -35,7 +34,6 @@ ENCODINGS = {
   THREE_BIT_OCTAL_ENCODING: 'Three-Bit Octal',
   FOUR_BIT_HEX_ENCODING: 'Four-Bit Hex',
   FIVE_BIT_A1: 'Five-Bit A1',
-  XOR: 'XOR',
   OTHER: 'Other',
 }
 
@@ -106,7 +104,13 @@ class Puzzle(models.Model):
     max_length=CHOICE_TYPE_LENGTH,
     choices=ENCODINGS,
     default=ALPHA_LENGTH_A1_ENCODING
-    )
+  )
+
+  encoding_name = models.CharField(
+    max_length=CHOICE_TYPE_LENGTH,
+    choices=ENCODINGS,
+    default=ALPHA_LENGTH_A1_ENCODING
+  )
 
   level = models.ForeignKey(
     Level,
