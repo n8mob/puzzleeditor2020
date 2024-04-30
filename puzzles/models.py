@@ -100,12 +100,6 @@ class Puzzle(models.Model):
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
 
-  encoding = models.CharField(
-    max_length=CHOICE_TYPE_LENGTH,
-    choices=ENCODINGS,
-    default=ALPHA_LENGTH_A1_ENCODING
-  )
-
   encoding_name = models.CharField(
     max_length=CHOICE_TYPE_LENGTH,
     choices=ENCODINGS,
@@ -124,7 +118,7 @@ class Puzzle(models.Model):
     ordering = ['puzzle_number']
 
   def __repr__(self):
-    return f'{self.type} {self.encoding}: {self.name}'
+    return f'{self.type} {self.encoding_name}: {self.name}'
 
   def __str__(self): return self.__repr__()
 
