@@ -26,6 +26,7 @@ ALPHA_LENGTH_A1_ENCODING = 'AlphaLengthA1'
 THREE_BIT_OCTAL_ENCODING = 'ThreeBitOctal'
 FOUR_BIT_HEX_ENCODING = '4bHex'
 FIVE_BIT_A1 = '5bA1'
+XOR = 'xor'
 
 ENCODINGS = {
   SINGLE_BIT_ENCODING: 'Single Bit',
@@ -34,6 +35,7 @@ ENCODINGS = {
   THREE_BIT_OCTAL_ENCODING: 'Three-Bit Octal',
   FOUR_BIT_HEX_ENCODING: 'Four-Bit Hex',
   FIVE_BIT_A1: 'Five-Bit A1',
+  XOR: 'XOR',
   OTHER: 'Other',
 }
 
