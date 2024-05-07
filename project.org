@@ -1,12 +1,29 @@
 #+title: Tasks and Plans for the MAGiE Puzzle Editor
 
-* TODO Add Encodings
+* DONE Add Encodings
+CLOSED: [2024-04-30 Tue 17:25]
 
-** TODO Create Encoding Entity model
+** DONE Create Encoding Entity model
+CLOSED: [2024-04-30 Tue 17:25]
 
-** TODO Add encodings to the top level of
+** DONE Add encodings to the top level of
+CLOSED: [2024-04-30 Tue 17:25]
 
-** TODO Migrate puzzle.encoding to a foreign-key reference
+** DOING Migrate puzzle.encoding to a foreign-key reference
+*** DONE add encoding_name field for display
+CLOSED: [2024-04-30 Tue 17:27]
+*** DONE copy encoding_id values to encoding_name
+CLOSED: [2024-04-30 Tue 17:27]
 
-** TODO Ensure that all puzzles link to an encoding
+** DOING Ensure that all puzzles link to an encoding
+*** DOING Look up encoding_id from encoding_name
+#+begin_src SQL
+update puzzles_puzzle
+set puzzles_puzzle.encoding_id = puzzles_encoding.id
+where puzzles_puzzle.encoding_name like 'xor%'
+#+end_src
+#+begin_example output
+[2024-04-30 00:23:49] [1] [SQLITE_ERROR] SQL error or missing database (near ".": syntax error)
+#+end_example
 
+**** TODO try changing SQLite driver or dialect
