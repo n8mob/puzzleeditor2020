@@ -25,6 +25,11 @@ class PuzzleSerializer(serializers.ModelSerializer):
   clue = serializers.StringRelatedField(many=True)
   winMessage = serializers.StringRelatedField(many=True)
   puzzleName = serializers.CharField(source='name')
+  encoding = SerializerMethodField(method_name='get_encoding')
+
+  @staticmethod
+  def get_encoding(puzzle):
+    return puzzle.encoding.encoding_id
 
   class Meta:
     model = Puzzle
@@ -85,6 +90,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class EncodingSerializer(serializers.ModelSerializer):
   type = serializers.CharField(source='encoding_type')
+
   class Meta:
     model = Encoding
     fields = [
