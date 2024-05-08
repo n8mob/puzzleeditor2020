@@ -1,9 +1,13 @@
 {% extends "admin/base.html" %}
-
 {% block title %}{{ title }} | {{ site_title|default:_('MAGiE admin') }}{% endblock %}
-
+{% load static %}
+{% block extrahead %}
+  <!-- Google tag (gtag.js) -->
+  {% load google_analytics_gtag %}
+  {% google_analytics_gtag %}
+{% endblock %}
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">MAGiE Puzzle Editor</a></h1>
+  <h1 id="site-name"><a href="{% url 'admin:index' %}">MAGiE Puzzle Editor</a></h1>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
