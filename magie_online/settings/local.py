@@ -20,6 +20,10 @@ CSRF_TRUSTED_ORIGINS = [
   'https://www.google-analytics.com'
 ]
 
+CORS_ALLOWED_ORIGINS = [
+  'http://localhost:5173'
+]
+
 GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-ZL5RKDBBF6'
 
 # Application definition
@@ -30,6 +34,7 @@ INSTALLED_APPS = [
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.messages',
+  'corsheaders',
   'puzzles.apps.PuzzlesConfig',
   'rest_framework',
   'char_counter',
@@ -45,6 +50,7 @@ MIDDLEWARE = [
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'magie_online.urls'
