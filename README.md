@@ -9,6 +9,17 @@ The basic data model is pretty simple.
 
 You can look at [puzzles/models.py](puzzles/models.py), there's a bit of kruft in there.
 
+## Menu UI
+1. Which menu to use is kind of baked into the game.
+
+   In the [Python version of the game](https://github.com/n8mob/MAGiEpy/blob/main/__main__.py), the full URL to the menu is provided as a command-line argument to the game.
+
+2. After that, the user is presented with a list of categories.  They select one.
+3. Then they are shown a list of levels.  They select one.
+
+After that, the game just presents each puzzle in the level. One after then other.
+
+
 ## Clients
 The service was made to drive a game developed in Unity that is no longer available in the app stores.
 
