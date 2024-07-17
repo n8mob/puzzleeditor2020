@@ -53,7 +53,7 @@ class PuzzleAdmin(admin.ModelAdmin):
 
   list_display = ['id', 'puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
-  list_filter = ['level', 'level__category', 'type']
+  list_filter = ['level', 'level__category', 'type', 'encoding']
   list_display_links = ['id', 'name', 'clue', 'winText']
   ordering = ('puzzle_number',)
 
