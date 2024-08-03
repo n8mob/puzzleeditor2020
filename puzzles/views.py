@@ -1,12 +1,11 @@
 import datetime
-import logging
 import zoneinfo
 
 from rest_framework import generics
 from rest_framework.response import Response
 
-from puzzles.models import Level, Menu, Puzzle
-from puzzles.serializers import LevelSerializer, MenuSerializer, PuzzleSerializer
+from puzzles.models import DailyPuzzle, Level, Menu, Puzzle
+from puzzles.serializers import DailyPuzzleSerializer, LevelSerializer, MenuSerializer, PuzzleSerializer
 
 
 class MenuListView(generics.ListCreateAPIView):
@@ -42,13 +41,33 @@ class PuzzleDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class DailyPuzzleView(generics.RetrieveAPIView):
   queryset = Puzzle.objects.all()
-  serializer_class = PuzzleSerializer
-  lookup_field = 'puzzle_number'
+  serializer_class = DailyPuzzleSerializer
+  lookup_field = 'date'
 
   def get(self, request, *args, **kwargs):
     local_zone = zoneinfo.ZoneInfo('America/Denver')
     local_now = datetime.datetime.now(local_zone)
-    random_puzzle = Puzzle.objects.order_by('?').first()
+    today = DailyPuzzle.objects.filter(date=local_now.date()).first()
 
-    serializer = self.get_serializer(random_puzzle)
+    serializer = self.get_serializer(today)
+    return Response(serializer.data)
+
+
+class DailyPuzzleTest(generics.RetrieveAPIView):
+  queryset = DailyPuzzle.objects.all()
+  serializer_class = DailyPuzzleSerializer
+  lookup_field = 'date'
+
+  def get(self, request, *args, **kwargs):
+    year = int(kwargs.get('year'))
+    month = int(kwargs.get('month'))
+    day = int(kwargs.get('day'))
+
+    # Use the extracted parameters as needed
+    test_date = datetime.date(year, month, day)
+    date_puzzle = DailyPuzzle.objects.filter(date=test_date).first()
+    if date_puzzle is None:
+      return Response({'error': 'No puzzle found for this date'}, status=404)
+
+    serializer = self.get_serializer(date_puzzle)
     return Response(serializer.data)

@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, Level, Menu, Category, LevelNameLine, Encoding
+from puzzles.models import DailyPuzzle, Puzzle, ClueLine, WinMessageLine, Level, Menu, Category, LevelNameLine, Encoding
 
 SORT_ORDER = 'sort_order'
 
@@ -29,6 +29,11 @@ class PuzzleSerializer(serializers.ModelSerializer):
 
   @staticmethod
   def get_encoding(puzzle):
+    if not puzzle:
+      return ''
+    elif not puzzle.encoding:
+      return puzzle.encoding_name or "no encoding"
+
     return puzzle.encoding.encoding_id
 
   class Meta:
@@ -170,3 +175,12 @@ class MenuSerializer(serializers.ModelSerializer):
 
           for sort_order, win_message_line in enumerate(win_message_lines):
             WinMessageLine.objects.create(win_message_in=new_puzzle, text=win_message_line, sort_order=sort_order)
+
+
+class DailyPuzzleSerializer(serializers.ModelSerializer):
+  puzzle = PuzzleSerializer()
+  encoding = EncodingSerializer()
+
+  class Meta:
+    model = DailyPuzzle
+    fields = '__all__'

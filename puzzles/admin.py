@@ -1,11 +1,11 @@
-from django.contrib import admin
-from django.db import models
 import json
 
-# Register your models here.
-from puzzles.models import Puzzle, ClueLine, WinMessageLine, LevelNameLine, Level, Category, Menu, MenuFile, Encoding
+from django.contrib import admin
+from django.db import models
+
 from char_counter.widget import CharCounterTextInput
-from puzzles.serializers import MenuSerializer, CategorySerializer
+from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, WinMessageLine
+from puzzles.serializers import MenuSerializer
 
 
 class BaseLineEditor(admin.TabularInline):
@@ -167,3 +167,15 @@ class MenuFileUpload(admin.ModelAdmin):
       existing_menu = menus_by_name.get()
       print(f'existing: {existing_menu}')
       print(f'TODO: Update with {menu_json}')
+
+
+@admin.register(DailyPuzzle)
+class DailyPuzzleAdmin(admin.ModelAdmin):
+    list_display = ['date', 'puzzle']
+    list_editable = ['puzzle']
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'puzzle':
+            menu_id = 5  # Menu ID for Daily Puzzles (I think)
+            kwargs['queryset'] = Puzzle.objects.filter(level__category__menu_id=menu_id)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)

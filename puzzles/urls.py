@@ -8,6 +8,7 @@ urlpatterns = [
   path('', views.PuzzlesListView.as_view()),
   path('<pk>', views.PuzzleDetailView.as_view()),
   path('today/', views.DailyPuzzleView.as_view()),
+  path('daily/<year>/<month>/<day>/', views.DailyPuzzleTest.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # `static` already configures DEBUG, so no need for this stuff.

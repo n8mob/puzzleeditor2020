@@ -120,7 +120,10 @@ class Puzzle(models.Model):
     ordering = ['puzzle_number']
 
   def __repr__(self):
-    return f'{self.type} {self.encoding_name}: {self.name}'
+    clue = self.full_clue()
+    if len(clue) > 28:
+      clue = clue[:25] + '...'
+    return f'{clue} {self.type} {self.encoding} ("{self.name}")'
 
   def __str__(self): return self.__repr__()
 
@@ -168,3 +171,12 @@ class LevelNameLine(Line):
     null=True,
     default=None
     )
+
+
+class DailyPuzzle(models.Model):
+  date = models.DateField(null=False, blank=False, unique=True)
+  puzzle = models.ForeignKey(Puzzle, on_delete=models.SET_NULL, related_name='puzzle_on_date', null=True, blank=True)
+
+  def encoding(self):
+    return self.puzzle.encoding
+
