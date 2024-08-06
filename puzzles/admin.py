@@ -173,6 +173,7 @@ class MenuFileUpload(admin.ModelAdmin):
 class DailyPuzzleAdmin(admin.ModelAdmin):
     list_display = ['date', 'puzzle']
     list_editable = ['puzzle']
+    ordering = ['date']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'puzzle':
