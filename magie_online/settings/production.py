@@ -36,13 +36,13 @@ def get_secret(secret_name):
 
 
 # Retrieve secrets
-SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
+SECRET_KEY = get_secret('prod/magiepuzzles/django_secret_key')
 
-database_credentials = json.loads(get_secret("prod/magiepuzzles/postgresql"))
+database_credentials = json.loads(get_secret('prod/magiepuzzles/postgresql'))
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': database_credentials['db_name'],
+    'NAME': database_credentials['dbname'],
     'USER': database_credentials['username'],
     'PASSWORD': database_credentials['password'],
     'HOST': database_credentials['host'],
