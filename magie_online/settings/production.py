@@ -22,13 +22,13 @@ def get_secret(secret_name):
       SecretId=secret_name
     )
   except (NoCredentialsError, PartialCredentialsError) as e:
-    raise Exception("AWS credentials not found") from e
+    raise Exception('AWS credentials not found') from e
   except client.exceptions.ResourceNotFoundException:
-    raise Exception(f"The requested secret {secret_name} was not found")
+    raise Exception(f'The requested secret {secret_name} was not found')
   except client.exceptions.InvalidRequestException as e:
-    raise Exception(f"The request was invalid due to: {e}")
+    raise Exception(f'The request was invalid due to: {e}')
   except client.exceptions.InvalidParameterException as e:
-    raise Exception(f"The request had invalid params: {e}")
+    raise Exception(f'The request had invalid params: {e}')
 
   # Decrypts secret using the associated KMS key.
   secret = get_secret_value_response['SecretString']
@@ -38,7 +38,7 @@ def get_secret(secret_name):
 # Retrieve secrets
 SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
-database_credentials = json.loads(get_secret("DATABASE_CREDENTIALS"))
+database_credentials = json.loads(get_secret("prod/magiepuzzles/postgresql"))
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
