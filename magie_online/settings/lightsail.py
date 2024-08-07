@@ -7,31 +7,13 @@ from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-def assume_role(role_arn, session_name):
-    sts_client = boto3.client('sts')
-    response = sts_client.assume_role(
-        RoleArn=role_arn,
-        RoleSessionName=session_name
-    )
-    credentials = response['Credentials']
-    return credentials
-
-
 def get_secret(secret_name):
     region_name = "us-west-2"
-    secret_role_arn = 'arn:aws:iam::118653355254:role/MAGiE-Puzzles-Role'
-    session_name = 'magie_puzzles_session'
-
-    # Assume the role
-    credentials = assume_role(secret_role_arn, session_name)
 
     # Create a Secrets Manager client using the assumed role's temporary credentials
     client = boto3.client(
         service_name='secretsmanager',
-        region_name=region_name,
-        aws_access_key_id=credentials['AccessKeyId'],
-        aws_secret_access_key=credentials['SecretAccessKey'],
-        aws_session_token=credentials['SessionToken']
+        region_name=region_name
     )
 
     try:
