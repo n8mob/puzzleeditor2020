@@ -55,10 +55,13 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
-  'localhost:8000',
   '100.20.81.239',
-  'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
-  'magie-editor.us-west-2.elasticbeanstalk.com',
+]
+
+CORS_ALLOWED_ORIGINS = [
+  'https://puzzles.magiegame.com',
+  'https://100.20.81.239',
+  'http://100.20.81.239'
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -73,9 +76,12 @@ INSTALLED_APPS = [
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.messages',
+  'corsheaders',
   'puzzles.apps.PuzzlesConfig',
   'rest_framework',
   'char_counter',
+  'django.contrib.staticfiles',
+  'analytical'
 ]
 
 MIDDLEWARE = [
@@ -86,6 +92,7 @@ MIDDLEWARE = [
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'magie_online.urls'
@@ -165,4 +172,5 @@ LOGGING = {
   },
 }
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
