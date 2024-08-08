@@ -56,6 +56,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
   '100.20.81.239',
+  'localhost'
 ]
 
 CORS_ALLOWED_ORIGINS = [
