@@ -56,6 +56,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
   'localhost:8000',
+  '100.20.81.239',
   'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
   'magie-editor.us-west-2.elasticbeanstalk.com',
 ]
