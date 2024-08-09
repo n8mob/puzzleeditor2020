@@ -138,7 +138,7 @@ class MenuSerializer(serializers.ModelSerializer):
         category[SORT_ORDER] = given_category_order
 
       levels = category.pop('levels')
-      category = Category.objects.create(menu=menu, **category)
+      category = Category.objects.create(menu=menu, name=category_name, sort_order=category[SORT_ORDER])
       for given_level_order, level in enumerate(levels):
         level_puzzles = level.pop('puzzles')
         level_name_lines = level.pop('levelName')
