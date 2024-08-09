@@ -171,12 +171,13 @@ class MenuFileUpload(admin.ModelAdmin):
 
 @admin.register(DailyPuzzle)
 class DailyPuzzleAdmin(admin.ModelAdmin):
-    list_display = ['date', 'puzzle']
-    list_editable = ['puzzle']
-    ordering = ['date']
+  list_display = ['date', 'puzzle']
+  list_editable = ['puzzle']
+  ordering = ['date']
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'puzzle':
-            menu_id = 5  # Menu ID for Daily Puzzles (I think)
-            kwargs['queryset'] = Puzzle.objects.filter(level__category__menu_id=menu_id)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+  def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    if db_field.name == 'puzzle':
+      daily_puzzles_menu = Menu.objects.filter(name='DailyPuzzles').first()
+      menu_id = daily_puzzles_menu.id
+      kwargs['queryset'] = Puzzle.objects.filter(level__category__menu_id=menu_id)
+    return super().formfield_for_foreignkey(db_field, request, **kwargs)
