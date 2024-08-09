@@ -59,6 +59,11 @@ ALLOWED_HOSTS = [
   'localhost'
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+  'https://puzzles.magiegame.com',
+  'https://www.google-analytics.com'
+]
+
 CORS_ALLOWED_ORIGINS = [
   'https://puzzles.magiegame.com',
   'https://100.20.81.239',
