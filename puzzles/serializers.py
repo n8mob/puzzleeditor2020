@@ -96,6 +96,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class EncodingSerializer(serializers.ModelSerializer):
   type = serializers.CharField(source='encoding_type')
 
+
   class Meta:
     model = Encoding
     fields = [
@@ -130,6 +131,12 @@ class MenuSerializer(serializers.ModelSerializer):
     categories = validated_data.pop('categories')
     encodings = validated_data.pop('encodings')
     menu = Menu.objects.create(**validated_data)
+
+    for encoding_id, encoding in encodings.items():
+      if Encoding.objects.filter(encoding_id=encoding_id).exists():
+        self.log.info(f'Encoding {encoding_id} already exists')
+      else:
+        Encoding.objects.create(encoding_id=encoding_id, encoding_type=encoding['type'], encoding=encoding['encoding'])
 
     for given_category_order, category_name in enumerate(categories):
       category = categories[category_name]
