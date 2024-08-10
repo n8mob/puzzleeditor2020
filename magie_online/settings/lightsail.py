@@ -56,19 +56,22 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
+  'd1ocrz2zrz8geq.cloudfront.net',
   '100.20.81.239',
   'localhost'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
   'https://puzzles.magiegame.com',
-  'https://www.google-analytics.com'
+  'https://www.google-analytics.com',
+  'https://d1ocrz2zrz8geq.cloudfront.net/'
 ]
 
 CORS_ALLOWED_ORIGINS = [
   'https://magiegame.com',
   'http://magiegame.local:5173',
   'https://puzzles.magiegame.com',
+  'https://d1ocrz2zrz8geq.cloudfront.net/',
   'https://100.20.81.239',
   'http://100.20.81.239'
 ]
