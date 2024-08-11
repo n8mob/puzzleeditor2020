@@ -2,7 +2,6 @@ import json
 import os
 
 import boto3
-import json
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -62,6 +61,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+  'https://magiegame.com',
   'https://puzzles.magiegame.com',
   'https://www.google-analytics.com',
   'https://d1ocrz2zrz8geq.cloudfront.net/'
