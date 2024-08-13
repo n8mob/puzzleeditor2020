@@ -70,7 +70,6 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
   'https://magiegame.com',
   'https://puzzles.magiegame.com',
-  'https://d1ocrz2zrz8geq.cloudfront.net/',
   'https://100.20.81.239',
   'http://100.20.81.239'
 ]
