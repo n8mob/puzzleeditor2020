@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from puzzles.models import DailyPuzzle, Puzzle, ClueLine, WinMessageLine, Level, Menu, Category, LevelNameLine, Encoding
+from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, Puzzle, WinMessageLine
 
 SORT_ORDER = 'sort_order'
 
@@ -12,7 +12,7 @@ SORT_ORDER = 'sort_order'
 class ClueLineSerializer(serializers.ModelSerializer):
   class Meta:
     model = ClueLine
-    fields = ['text', 'length', 'clue_in']
+    fields = ['text', 'clue_in']
 
 
 class WinMessageLineSerializer(serializers.ModelSerializer):
@@ -96,6 +96,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class EncodingSerializer(serializers.ModelSerializer):
   type = serializers.CharField(source='encoding_type')
 
+
   class Meta:
     model = Encoding
     fields = [
@@ -131,9 +132,11 @@ class MenuSerializer(serializers.ModelSerializer):
     encodings = validated_data.pop('encodings')
     menu = Menu.objects.create(**validated_data)
 
-    for encoding_json in encodings:
-      new_encoding = Encoding.objects.create(**encoding_json)
-      new_encoding.menus.add(menu)
+    for encoding_id, encoding in encodings.items():
+      if Encoding.objects.filter(encoding_id=encoding_id).exists():
+        self.log.info(f'Encoding {encoding_id} already exists')
+      else:
+        Encoding.objects.create(encoding_id=encoding_id, encoding_type=encoding['type'], encoding=encoding['encoding'])
 
     for given_category_order, category_name in enumerate(categories):
       category = categories[category_name]
@@ -142,39 +145,53 @@ class MenuSerializer(serializers.ModelSerializer):
         category[SORT_ORDER] = given_category_order
 
       levels = category.pop('levels')
-      category = Category.objects.create(menu=menu, **category)
+      category = Category.objects.create(menu=menu, name=category_name, sort_order=category[SORT_ORDER])
       for given_level_order, level in enumerate(levels):
         level_puzzles = level.pop('puzzles')
         level_name_lines = level.pop('levelName')
         if SORT_ORDER not in level:
           level[SORT_ORDER] = given_level_order
-        new_level = Level.objects.create(category=category, **level)
-        for sort_order, level_name_line in enumerate(level_name_lines):
-          LevelNameLine.objects.create(level_name_of=new_level, text=level_name_line, sort_order=sort_order)
-        for puzzle in level_puzzles:
-          clue_lines = puzzle.pop('clue')
-          win_message_lines = puzzle.pop('winMessage')
+        if Level.objects.filter(levelNumber=level['levelNumber']).exists():
+          existing = str(Level.objects.get(levelNumber=level["levelNumber"]))
+          new_level_name = ' '.join(level_name_lines)
 
-          if 'puzzleName' in puzzle:
-            puzzle['name'] = puzzle.pop('puzzleName')
+          if existing != new_level_name:
+            self.log.error(
+              f'Level {level["levelNumber"]} already exists and names do not match'
+              + f'\n\t(existing: {existing}, new: {new_level_name})'
+              )
+          else:
+            self.log.info(
+              f'Level {level["levelNumber"]} already exists ({existing})'
+            )
+        else:
+          new_level = Level.objects.create(category=category, **level)
+          for sort_order, level_name_line in enumerate(level_name_lines):
+            LevelNameLine.objects.create(level_name_of=new_level, text=level_name_line, sort_order=sort_order)
+          for puzzle in level_puzzles:
+            clue_lines = puzzle.pop('clue')
+            win_message_lines = puzzle.pop('winMessage')
 
-          if 'level' in puzzle:
-            del puzzle['level']
+            if 'puzzleName' in puzzle:
+              puzzle['name'] = puzzle.pop('puzzleName')
 
-          if 'id' in puzzle:
-            puzzle['puzzle_number'] = puzzle.pop('id')
+            if 'level' in puzzle:
+              del puzzle['level']
 
-          try:
-            new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
-          except IntegrityError as in_e:
-            self.log.error(f'{in_e} while creating {puzzle}')
-            raise
+            if 'id' in puzzle:
+              puzzle['puzzle_number'] = puzzle.pop('id')
 
-          for sort_order, clue_line in enumerate(clue_lines):
-            ClueLine.objects.create(clue_in=new_puzzle, text=clue_line, sort_order=sort_order)
+            try:
+              new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
+            except IntegrityError as in_e:
+              self.log.error(f'{in_e} while creating {puzzle}')
+              raise
 
-          for sort_order, win_message_line in enumerate(win_message_lines):
-            WinMessageLine.objects.create(win_message_in=new_puzzle, text=win_message_line, sort_order=sort_order)
+            for sort_order, clue_line in enumerate(clue_lines):
+              ClueLine.objects.create(clue_in=new_puzzle, text=clue_line, sort_order=sort_order)
+
+            for sort_order, win_message_line in enumerate(win_message_lines):
+              WinMessageLine.objects.create(win_message_in=new_puzzle, text=win_message_line, sort_order=sort_order)
 
 
 class DailyPuzzleSerializer(serializers.ModelSerializer):
