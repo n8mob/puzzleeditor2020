@@ -12,7 +12,7 @@ SORT_ORDER = 'sort_order'
 class ClueLineSerializer(serializers.ModelSerializer):
   class Meta:
     model = ClueLine
-    fields = ['text', 'length', 'clue_in']
+    fields = ['text', 'clue_in']
 
 
 class WinMessageLineSerializer(serializers.ModelSerializer):
