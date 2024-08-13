@@ -62,6 +62,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
   'https://magiegame.com',
+  'http://magiegame.local:5173',
   'https://puzzles.magiegame.com',
   'https://www.google-analytics.com',
   'https://d1ocrz2zrz8geq.cloudfront.net/'
