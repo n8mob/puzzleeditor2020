@@ -2,6 +2,7 @@
 {% block title %}{{ title }} | {{ site_title|default:_('MAGiE admin') }}{% endblock %}
 {% load static %}
 {% block extrahead %}
+  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_MEASUREMENT_ID }}"></script>
   <script>
@@ -15,4 +16,3 @@
 {% endblock %}
 {% block nav-global %}{% endblock %}
   <h1 id="site-name"><a href="{% url 'admin:index' %}">MAGiE Puzzle Editor</a></h1>
-  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
