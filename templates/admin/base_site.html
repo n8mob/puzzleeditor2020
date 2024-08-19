@@ -5,6 +5,7 @@
   <!-- Google tag (gtag.js) -->
   {% load google_analytics_gtag %}
   {% google_analytics_gtag %}
+  <link rel="icon" type="image/png" href="{% static '/favicon.png' %}">
 {% endblock %}
 {% block branding %}
   <h1 id="site-name"><a href="{% url 'admin:index' %}">MAGiE Puzzle Editor</a></h1>
