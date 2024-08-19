@@ -2,6 +2,9 @@
 {% block title %}{{ title }} | {{ site_title|default:_('MAGiE admin') }}{% endblock %}
 {% load static %}
 {% block extrahead %}
+  <!-- Google tag (gtag.js) -->
+  {% load google_analytics_gtag %}
+  {% google_analytics_gtag %}
   <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
 {% endblock %}
 {% block branding %}
