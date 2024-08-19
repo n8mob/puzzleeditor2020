@@ -80,7 +80,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-ZL5RKDBBF6'
+GOOGLE_ANALYTICS_MEASUREMENT_ID = 'G-ZL5RKDBBF6'
 
 
 # Application definition
@@ -96,7 +96,6 @@ INSTALLED_APPS = [
   'rest_framework',
   'char_counter',
   'django.contrib.staticfiles',
-  'analytical'
 ]
 
 MIDDLEWARE = [
