@@ -91,8 +91,7 @@ INSTALLED_APPS = [
   'corsheaders',
   'puzzles.apps.PuzzlesConfig',
   'rest_framework',
-  'char_counter',
-  'django.contrib.staticfiles'
+  'char_counter'
 ]
 
 MIDDLEWARE = [
