@@ -54,14 +54,31 @@ DATABASES = {
 DEBUG = False
 
 ALLOWED_HOSTS = [
-  'puzzles.magiegame.com',
-  'puzzleeditor2020-dev.us-west-2.elasticbeanstalk.com',
-  'magie-editor.us-west-2.elasticbeanstalk.com',
+  'puzzles.magiegame.com'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+  'https://magiegame.com',
+  'http://magiegame.local:5173',
+  'https://puzzles.magiegame.com',
+  'https://www.google-analytics.com',
+  'https://d1ocrz2zrz8geq.cloudfront.net/'
+]
+
+CORS_ALLOWED_ORIGINS = [
+  'https://magiegame.com',
+  'http://magiegame.local:5173',
+  'https://puzzles.magiegame.com',
+  'https://100.20.81.239',
+  'http://100.20.81.239'
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-ZL5RKDBBF6'
+
 
 # Application definition
 
@@ -71,9 +88,12 @@ INSTALLED_APPS = [
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.messages',
+  'corsheaders',
   'puzzles.apps.PuzzlesConfig',
   'rest_framework',
   'char_counter',
+  'django.contrib.staticfiles',
+  'analytical'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +104,7 @@ MIDDLEWARE = [
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'magie_online.urls'
@@ -91,7 +112,7 @@ ROOT_URLCONF = 'magie_online.urls'
 TEMPLATES = [
   {
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [os.path.join(BASE_DIR, '../../templates')]
+    'DIRS': [os.path.join(BASE_DIR, '/templates')]
     ,
     'APP_DIRS': True,
     'OPTIONS': {
@@ -163,4 +184,5 @@ LOGGING = {
   },
 }
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
