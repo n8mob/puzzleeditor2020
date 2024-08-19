@@ -2,7 +2,6 @@ import json
 import os
 
 import boto3
-import json
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -56,6 +55,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
+  'd1ocrz2zrz8geq.cloudfront.net',
   '100.20.81.239',
   'localhost'
 ]
@@ -80,7 +80,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-ZL5RKDBBF6'
+GOOGLE_ANALYTICS_MEASUREMENT_ID = 'G-ZL5RKDBBF6'
 
 
 # Application definition
@@ -96,7 +96,6 @@ INSTALLED_APPS = [
   'rest_framework',
   'char_counter',
   'django.contrib.staticfiles',
-  'analytical'
 ]
 
 MIDDLEWARE = [
