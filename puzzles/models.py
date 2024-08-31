@@ -95,7 +95,7 @@ class Level(models.Model):
 class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
   name = models.CharField(max_length=250)
-  line_length = models.PositiveIntegerField(default=13)
+  line_length = models.PositiveIntegerField(default=20)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
@@ -151,6 +151,13 @@ class ClueLine(Line):
     null=True,
     default=None
     )
+
+  def save(self, *args, **kwargs):
+    if not self.sort_order:
+      self.sort_order = self.clue_in.clue.count()
+
+    self.text = self.text.upper()
+    super().save(*args, **kwargs)
 
 
 class WinMessageLine(Line):

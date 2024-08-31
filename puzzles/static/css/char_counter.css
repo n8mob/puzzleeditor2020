@@ -1,4 +1,8 @@
 
 .char-counter-text-input + .counter.long {
-	color: red;
+	color: #bb00ff;
+}
+
+.char-counter-text-input {
+	text-transform: uppercase;
 }

@@ -3,7 +3,7 @@ class CharCounter {
 		this.inputSelector = inputSelector;
 		this.lineLengthSelector = lineLengthSelector;
 		this.charCountLabelSelector = charCountLabelSelector;
-		this.lineLength = 13;
+		this.lineLength = 20;
 	}
 
 	onDomLoaded() {
