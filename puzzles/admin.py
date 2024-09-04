@@ -2,6 +2,8 @@ import json
 
 from django.contrib import admin
 from django.db import models
+from django.urls import reverse
+from django.utils.html import format_html
 
 from char_counter.widget import CharCounterTextInput
 from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, WinMessageLine
@@ -51,7 +53,15 @@ class PuzzleAdmin(admin.ModelAdmin):
       kwargs['strip'] = False
     return super().formfield_for_dbfield(db_field, request, **kwargs)
 
-  list_display = ['id', 'puzzle_number', 'level', 'name', 'clue', 'winText', 'type', 'encoding']
+  def daily_puzzle_link(self, obj):
+    daily_puzzle = obj.puzzle_on_date.first()
+    if daily_puzzle:
+      url = reverse('admin:puzzles_dailypuzzle_change', args=[daily_puzzle.id])
+      return format_html(f'<a href="{url}">{daily_puzzle.date}</a>')
+
+  daily_puzzle_link.short_description = 'Puzzle on Date'
+
+  list_display = ['id', 'puzzle_number', 'level', 'name', 'daily_puzzle_link', 'winText', 'clue', 'type', 'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
   list_filter = ['level', 'level__category', 'type', 'encoding']
   list_display_links = ['id', 'name', 'clue', 'winText']
