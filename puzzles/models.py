@@ -20,23 +20,6 @@ ENCODING_TYPE_CHOICES = {
   OTHER: 'Other'
 }
 
-SINGLE_BIT_ENCODING = 'SingleBit'
-DOUBLE_BIT_ENCODING = 'DoubleBit'
-ALPHA_LENGTH_A1_ENCODING = 'AlphaLengthA1'
-THREE_BIT_OCTAL_ENCODING = 'ThreeBitOctal'
-FOUR_BIT_HEX_ENCODING = '4bHex'
-FIVE_BIT_A1 = '5bA1'
-
-ENCODINGS = {
-  SINGLE_BIT_ENCODING: 'Single Bit',
-  DOUBLE_BIT_ENCODING: 'Double Bit',
-  ALPHA_LENGTH_A1_ENCODING: 'Alpha-Length A1',
-  THREE_BIT_OCTAL_ENCODING: 'Three-Bit Octal',
-  FOUR_BIT_HEX_ENCODING: 'Four-Bit Hex',
-  FIVE_BIT_A1: 'Five-Bit A1',
-  OTHER: 'Other',
-}
-
 
 def concat_lines(relation):
   return ' '.join(line.text for line in relation.all())
