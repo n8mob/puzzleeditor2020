@@ -102,12 +102,6 @@ class Puzzle(models.Model):
 
   encoding = models.ForeignKey(Encoding, null=True, blank=True, on_delete=models.SET_NULL, related_name='puzzles')
 
-  encoding_name = models.CharField(
-    max_length=CHOICE_TYPE_LENGTH,
-    choices=ENCODINGS,
-    default=ALPHA_LENGTH_A1_ENCODING
-  )
-
   level = models.ForeignKey(
     Level,
     on_delete=models.CASCADE,
@@ -129,6 +123,10 @@ class Puzzle(models.Model):
 
   def full_clue(self):
     return concat_lines(self.clue)
+
+  @property
+  def encoding_name(self):
+    return self.encoding.encoding_id if self.encoding else 'No encoding selected'
 
 
 class Line(models.Model):
