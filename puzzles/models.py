@@ -20,23 +20,6 @@ ENCODING_TYPE_CHOICES = {
   OTHER: 'Other'
 }
 
-SINGLE_BIT_ENCODING = 'SingleBit'
-DOUBLE_BIT_ENCODING = 'DoubleBit'
-ALPHA_LENGTH_A1_ENCODING = 'AlphaLengthA1'
-THREE_BIT_OCTAL_ENCODING = 'ThreeBitOctal'
-FOUR_BIT_HEX_ENCODING = '4bHex'
-FIVE_BIT_A1 = '5bA1'
-
-ENCODINGS = {
-  SINGLE_BIT_ENCODING: 'Single Bit',
-  DOUBLE_BIT_ENCODING: 'Double Bit',
-  ALPHA_LENGTH_A1_ENCODING: 'Alpha-Length A1',
-  THREE_BIT_OCTAL_ENCODING: 'Three-Bit Octal',
-  FOUR_BIT_HEX_ENCODING: 'Four-Bit Hex',
-  FIVE_BIT_A1: 'Five-Bit A1',
-  OTHER: 'Other',
-}
-
 
 def concat_lines(relation):
   return ' '.join(line.text for line in relation.all())
@@ -102,12 +85,6 @@ class Puzzle(models.Model):
 
   encoding = models.ForeignKey(Encoding, null=True, blank=True, on_delete=models.SET_NULL, related_name='puzzles')
 
-  encoding_name = models.CharField(
-    max_length=CHOICE_TYPE_LENGTH,
-    choices=ENCODINGS,
-    default=ALPHA_LENGTH_A1_ENCODING
-  )
-
   level = models.ForeignKey(
     Level,
     on_delete=models.CASCADE,
@@ -129,6 +106,10 @@ class Puzzle(models.Model):
 
   def full_clue(self):
     return concat_lines(self.clue)
+
+  @property
+  def encoding_name(self):
+    return self.encoding.encoding_id if self.encoding else 'No encoding selected'
 
 
 class Line(models.Model):
