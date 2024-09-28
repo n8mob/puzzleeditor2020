@@ -7,7 +7,7 @@ from rest_framework.fields import SerializerMethodField
 from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, Puzzle, WinMessageLine
 
 SORT_ORDER = 'sort_order'
-
+DEFAULT_ENCODING = 'AlphaLengthA1'
 
 class ClueLineSerializer(serializers.ModelSerializer):
   class Meta:
@@ -128,10 +128,18 @@ class MenuSerializer(serializers.ModelSerializer):
     ]
 
   def create(self, validated_data):
+    if 'categories' not in validated_data:
+      self.log.error('No categories found')
+      return
     categories = validated_data.pop('categories')
-    encodings = validated_data.pop('encodings')
-    menu = Menu.objects.create(**validated_data)
 
+    if 'encodings' not in validated_data:
+      self.log.warning(f'No encodings found for {validated_data["name"]}')
+      encodings = {}
+    else:
+      encodings = validated_data.pop('encodings')
+
+    menu = Menu.objects.create(**validated_data)
     for encoding_id, encoding in encodings.items():
       if Encoding.objects.filter(encoding_id=encoding_id).exists():
         self.log.info(f'Encoding {encoding_id} already exists')
@@ -152,7 +160,7 @@ class MenuSerializer(serializers.ModelSerializer):
         if SORT_ORDER not in level:
           level[SORT_ORDER] = given_level_order
         if Level.objects.filter(levelNumber=level['levelNumber']).exists():
-          existing = str(Level.objects.get(levelNumber=level["levelNumber"]))
+          existing = ' '.join(Level.objects.get(levelNumber=level["levelNumber"]).levelName)
           new_level_name = ' '.join(level_name_lines)
 
           if existing != new_level_name:
@@ -182,7 +190,12 @@ class MenuSerializer(serializers.ModelSerializer):
               puzzle['puzzle_number'] = puzzle.pop('id')
 
             try:
+              if 'encoding_name' in puzzle:
+                encoding_name = puzzle.pop('encoding_name')
+              else:
+                encoding_name = DEFAULT_ENCODING
               new_puzzle = Puzzle.objects.create(level=new_level, **puzzle)
+              new_puzzle.encoding = Encoding.objects.get(encoding_id=encoding_name)
             except IntegrityError as in_e:
               self.log.error(f'{in_e} while creating {puzzle}')
               raise
