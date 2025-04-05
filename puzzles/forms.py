@@ -1,12 +1,12 @@
 from django import forms
-
-from puzzles.models import Category, DailyPuzzle, Level, Menu, Puzzle
+from puzzles.models import DailyPuzzle, Menu, Category, Level, Puzzle
 
 
 class DailyPuzzleForm(forms.ModelForm):
   menu = forms.ModelChoiceField(queryset=Menu.objects.all(), required=False)
   category = forms.ModelChoiceField(queryset=Category.objects.none(), required=False)
   level = forms.ModelChoiceField(queryset=Level.objects.none(), required=False)
+  puzzle = forms.ModelChoiceField(queryset=Puzzle.objects.none(), required=False)
 
   class Meta:
     model = DailyPuzzle
