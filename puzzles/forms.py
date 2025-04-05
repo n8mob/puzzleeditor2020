@@ -1,4 +1,5 @@
 from django import forms
+
 from puzzles.models import Category, DailyPuzzle, Level, Menu, Puzzle
 
 
@@ -9,7 +10,7 @@ class DailyPuzzleForm(forms.ModelForm):
 
   class Meta:
     model = DailyPuzzle
-    fields = ['date', 'puzzle']
+    fields = ['date', 'menu', 'category', 'level', 'puzzle']
 
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
@@ -31,3 +32,5 @@ class DailyPuzzleForm(forms.ModelForm):
         self.fields['puzzle'].queryset = Puzzle.objects.filter(level_id=level_id).order_by('puzzle_number')
       except (ValueError, TypeError):
         pass
+    else:
+      self.fields['puzzle'].queryset = Puzzle.objects.none()

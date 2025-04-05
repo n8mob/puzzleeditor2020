@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from char_counter.widget import CharCounterTextInput
+from puzzles.forms import DailyPuzzleForm
 from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, WinMessageLine
 from puzzles.serializers import MenuSerializer
 
@@ -181,13 +182,19 @@ class MenuFileUpload(admin.ModelAdmin):
 
 @admin.register(DailyPuzzle)
 class DailyPuzzleAdmin(admin.ModelAdmin):
+  form = DailyPuzzleForm
   list_display = ['date', 'puzzle']
   list_editable = ['puzzle']
   ordering = ['date']
 
+  class Media:
+    js = ('js/daily_puzzle_form.js',)
+
   def formfield_for_foreignkey(self, db_field, request, **kwargs):
     if db_field.name == 'puzzle':
-      daily_puzzles_menu = Menu.objects.filter(name='DailyPuzzles').first()
-      menu_id = daily_puzzles_menu.id
-      kwargs['queryset'] = Puzzle.objects.filter(level__category__menu_id=menu_id)
+      if request.POST.get('level'):
+        level_id = request.POST.get('level')
+        kwargs['queryset'] = Puzzle.objects.filter(level_id=level_id)
+      else:
+        kwargs['queryset'] = Puzzle.objects.none()
     return super().formfield_for_foreignkey(db_field, request, **kwargs)
