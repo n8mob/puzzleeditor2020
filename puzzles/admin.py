@@ -1,9 +1,12 @@
+import datetime
 import json
 
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
 from char_counter.widget import CharCounterTextInput
 from puzzles.forms import DailyPuzzleForm
@@ -180,11 +183,42 @@ class MenuFileUpload(admin.ModelAdmin):
       print(f'TODO: Update with {menu_json}')
 
 
+class DateRangeFilter(SimpleListFilter):
+  title = _('Date range')
+  parameter_name = 'date_range'
+
+  def lookups(self, request, model_admin):
+    return (
+      ('last_month', _('Last month')),
+      ('last_7_days', _('Last 7 days')),
+      ('next_7_days', _('Next 7 days')),
+      ('next_month', _('Next month')),
+    )
+
+  def queryset(self, request, queryset):
+    today = datetime.date.today()
+    if self.value() == 'last_month':
+      first_day_last_month = (today.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
+      last_day_last_month = today.replace(day=1) - datetime.timedelta(days=1)
+      return queryset.filter(date__range=(first_day_last_month, last_day_last_month))
+    elif self.value() == 'last_7_days':
+      last_week = today - datetime.timedelta(days=7)
+      return queryset.filter(date__range=(last_week, today))
+    if self.value() == 'next_7_days':
+      next_week = today + datetime.timedelta(days=7)
+      return queryset.filter(date__range=(today, next_week))
+    elif self.value() == 'next_month':
+      first_day_next_month = (today.replace(day=1) + datetime.timedelta(days=32)).replace(day=1)
+      last_day_next_month = (first_day_next_month + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
+      return queryset.filter(date__range=(first_day_next_month, last_day_next_month))
+    return queryset
+
+
 @admin.register(DailyPuzzle)
 class DailyPuzzleAdmin(admin.ModelAdmin):
   form = DailyPuzzleForm
   list_display = ['date', 'puzzle']
-  list_editable = ['puzzle']
+  list_filter = [DateRangeFilter]
   ordering = ['date']
 
   class Media:
@@ -201,22 +235,22 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
 
   def render_change_form(self, request, context, *args, **kwargs):
     if context.get('original') and context['original'].puzzle:
-        # Access the puzzle through the original object
-        puzzle = context['original'].puzzle
-        level = puzzle.level
-        category = level.category
-        menu = category.menu
+      # Access the puzzle through the original object
+      puzzle = context['original'].puzzle
+      level = puzzle.level
+      category = level.category
+      menu = category.menu
 
-        # Set initial values for the form fields
-        context['adminform'].form.initial['menu'] = menu.id
-        context['adminform'].form.initial['category'] = category.id
-        context['adminform'].form.initial['level'] = level.levelNumber
-        context['adminform'].form.initial['puzzle'] = puzzle.id
+      # Set initial values for the form fields
+      context['adminform'].form.initial['menu'] = menu.id
+      context['adminform'].form.initial['category'] = category.id
+      context['adminform'].form.initial['level'] = level.levelNumber
+      context['adminform'].form.initial['puzzle'] = puzzle.id
 
-        # Set data attributes for JavaScript
-        context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
-        context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
-        context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
-        context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
+      # Set data attributes for JavaScript
+      context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
+      context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
+      context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
+      context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
     return super().render_change_form(request, context, *args, **kwargs)
 
