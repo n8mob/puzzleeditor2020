@@ -190,8 +190,10 @@ class DateRangeFilter(SimpleListFilter):
   def lookups(self, request, model_admin):
     return (
       ('last_month', _('Last month')),
-      ('last_7_days', _('Last 7 days')),
-      ('next_7_days', _('Next 7 days')),
+      ('last_week', _('Last week')),
+      ('this_week', _('This week')),
+      ('this_month', _('This month')),
+      ('next_week', _('Next week')),
       ('next_month', _('Next month')),
     )
 
@@ -201,12 +203,21 @@ class DateRangeFilter(SimpleListFilter):
       first_day_last_month = (today.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
       last_day_last_month = today.replace(day=1) - datetime.timedelta(days=1)
       return queryset.filter(date__range=(first_day_last_month, last_day_last_month))
-    elif self.value() == 'last_7_days':
-      last_week = today - datetime.timedelta(days=7)
-      return queryset.filter(date__range=(last_week, today))
-    if self.value() == 'next_7_days':
-      next_week = today + datetime.timedelta(days=7)
-      return queryset.filter(date__range=(today, next_week))
+    elif self.value() == 'last_week':
+      last_week_start = today - datetime.timedelta(days=today.weekday() + 7)
+      last_week_end = last_week_start + datetime.timedelta(days=6)
+      return queryset.filter(date__range=(last_week_start, last_week_end))
+    elif self.value() == 'this_week':
+      first_day_this_week = today - datetime.timedelta(days=today.weekday())
+      return queryset.filter(date__range=(first_day_this_week, today))
+    elif self.value() == 'this_month':
+      first_day_this_month = today.replace(day=1)
+      last_day_this_month = (first_day_this_month + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
+      return queryset.filter(date__range=(first_day_this_month, last_day_this_month))
+    elif self.value() == 'next_week':
+      next_week_start = today + datetime.timedelta(days=(7 - today.weekday()))
+      next_week_end = next_week_start + datetime.timedelta(days=6)
+      return queryset.filter(date__range=(next_week_start, next_week_end))
     elif self.value() == 'next_month':
       first_day_next_month = (today.replace(day=1) + datetime.timedelta(days=32)).replace(day=1)
       last_day_next_month = (first_day_next_month + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
@@ -253,4 +264,3 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
       context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
       context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
     return super().render_change_form(request, context, *args, **kwargs)
-
