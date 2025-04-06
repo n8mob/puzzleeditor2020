@@ -96,6 +96,7 @@ INSTALLED_APPS = [
   'rest_framework',
   'char_counter',
   'django.contrib.staticfiles',
+  'analytical',
 ]
 
 MIDDLEWARE = [
