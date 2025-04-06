@@ -20,8 +20,11 @@ from magie_online import views
 
 urlpatterns = [
   path('', views.index),
-  path('admin/', admin.site.urls),
   path('puzzles/', include('puzzles.urls')),
   path('levels/', include('puzzles.levels_urls')),
   path('menus/', include('puzzles.menu_urls')),
+  path('admin/', admin.site.urls),
+  path('adminapi/categories/', views.get_categories, name='get_categories'),
+  path('adminapi/levels/', views.get_levels, name='get_levels'),
+  path('adminapi/puzzles/', views.get_puzzles, name='get_puzzles'),
 ]
