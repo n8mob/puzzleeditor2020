@@ -4,9 +4,10 @@
 {% load analytical %}
 
 {% block extrahead %}
-  {% analytical_head_top %}
+  {% block analytical_head_top %}{% endblock %}
   <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
   {{ block.super }}
+   {% block analytical_head_bottom %}{% endblock %}
 {% endblock %}
 
 {% block branding %}
