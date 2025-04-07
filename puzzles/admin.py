@@ -49,8 +49,12 @@ class PuzzleAdmin(admin.ModelAdmin):
   inlines = [PuzzleInlineClueLine, PuzzleInlineWinMessageLine]
 
   @staticmethod
-  def clue(puzzle):
+  def short_clue(puzzle):
     return str(puzzle.full_clue()[:25])
+
+  @staticmethod
+  def winMessage(puzzle):
+    return str(puzzle.winMessage.first().text) if puzzle.winMessage.exists() else ''
 
   def formfield_for_dbfield(self, db_field, request, **kwargs):
     if db_field.name == 'winText':
@@ -65,10 +69,10 @@ class PuzzleAdmin(admin.ModelAdmin):
 
   daily_puzzle_link.short_description = 'Puzzle on Date'
 
-  list_display = ['id', 'puzzle_number', 'level', 'name', 'daily_puzzle_link', 'winText', 'clue', 'type', 'encoding']
+  list_display = ['puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue', 'type', 'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
   list_filter = ['level', 'level__category', 'type', 'encoding']
-  list_display_links = ['id', 'name', 'clue', 'winText']
+  list_display_links = ['name', 'short_clue']
   ordering = ('puzzle_number',)
 
 
@@ -89,12 +93,25 @@ class LevelNameLineInline(BaseLineEditor):
 
 class PuzzleInline(admin.TabularInline):
   model = Puzzle
-  show_change_link = True
   can_delete = False
+  show_change_link = True
   extra = 0
 
-  fields = ['puzzle_number', 'level', 'full_clue', 'init', 'winText', 'type', 'encoding', 'line_length']
-  readonly_fields = ['full_clue', 'line_length', 'init', 'winText']
+  def clue_link(self, puzzle):
+    puzzle_url = reverse('admin:puzzles_puzzle_change', args=[puzzle.id])
+    short_clue_text = puzzle.full_clue()[:35]
+    return format_html('<a href="{}">{}</a>', puzzle_url, str(short_clue_text))
+
+  clue_link.short_description = 'Clue'
+
+  def name_link(self, puzzle):
+    puzzle_url = reverse('admin:puzzles_puzzle_change', args=[puzzle.id])
+    return format_html('<a href="{}">{}</a>', puzzle_url, str(puzzle.name))
+
+  name_link.short_description = 'Name'
+
+  fields = ['puzzle_number', 'name_link', 'clue_link', 'init', 'winText', 'type', 'encoding']
+  readonly_fields = ['name_link', 'clue_link', 'init', 'winText']
   editable_fields = ['puzzle_number', 'type', 'encoding']
 
 
@@ -102,16 +119,23 @@ class PuzzleInline(admin.TabularInline):
 class LevelAdmin(admin.ModelAdmin):
   readonly_fields = ['levelNumber', 'level_name']
   inlines = [LevelNameLineInline, PuzzleInline]
-
+  
   @staticmethod
   def level_name(level):
     return str(level)
 
+  @staticmethod
+  def puzzle_count(level):
+    return level.puzzles.count()
+
+  puzzle_count.short_description = 'Puzzle Count'
+
   list_editable = ['category', 'sort_order']
-  list_display = ['levelNumber', 'sort_order', 'levelVersion', 'level_name', 'category']
+  list_display = ['levelNumber', 'sort_order', 'levelVersion', 'level_name', 'category', 'puzzle_count']
   list_display_links = ['levelNumber', 'level_name']
   list_filter = ['category', 'category__menu']
   fields = ['levelNumber', 'levelVersion', 'category']
+  ordering = ['category', 'sort_order']
 
 
 class LevelInline(admin.TabularInline):
@@ -264,3 +288,4 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
       context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
       context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
     return super().render_change_form(request, context, *args, **kwargs)
+

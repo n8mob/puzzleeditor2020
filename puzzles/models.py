@@ -168,3 +168,4 @@ class DailyPuzzle(models.Model):
   def encoding(self):
     return self.puzzle.encoding
 
+
