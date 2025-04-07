@@ -82,7 +82,6 @@ CSRF_COOKIE_SECURE = True
 
 GOOGLE_ANALYTICS_MEASUREMENT_ID = 'G-423DSKKYX5'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -133,9 +132,6 @@ WSGI_APPLICATION = 'magie_online.wsgi.application'
 
 # Database
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
   {
