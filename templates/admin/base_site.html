@@ -4,9 +4,9 @@
 {% load analytical %}
 
 {% block extrahead %}
+  {% analytical_head_top %}
   <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
   {{ block.super }}
-  {% google_analytics %}
 {% endblock %}
 
 {% block branding %}
