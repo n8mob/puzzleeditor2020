@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    environment = os.environ.get('APP_ENVIRONMENT', default='production')
+    environment = os.environ.get('APP_ENVIRONMENT', default='local')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'magie_online.settings.{environment}')
     try:
         from django.core.management import execute_from_command_line
