@@ -160,7 +160,7 @@ class MenuSerializer(serializers.ModelSerializer):
         if SORT_ORDER not in level:
           level[SORT_ORDER] = given_level_order
         if Level.objects.filter(levelNumber=level['levelNumber']).exists():
-          existing = ' '.join(Level.objects.get(levelNumber=level["levelNumber"]).levelName)
+          existing = str(Level.objects.get(levelNumber=level["levelNumber"]))
           new_level_name = ' '.join(level_name_lines)
 
           if existing != new_level_name:

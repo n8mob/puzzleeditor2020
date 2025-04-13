@@ -68,7 +68,7 @@ class Level(models.Model):
   sort_order = models.PositiveIntegerField(null=True, blank=True)
 
   class Meta:
-    ordering = ['sort_order']
+    ordering = ['category', 'sort_order']
 
   def __str__(self):
     concat_name = concat_lines(self.levelName)
@@ -94,7 +94,7 @@ class Puzzle(models.Model):
     default=None, )
 
   class Meta:
-    ordering = ['puzzle_number']
+    ordering = ['level__category', 'level', 'puzzle_number']
 
   def __repr__(self):
     clue = self.full_clue()
