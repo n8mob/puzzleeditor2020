@@ -65,10 +65,11 @@ class Level(models.Model):
   levelNumber = models.AutoField(primary_key=True, verbose_name='Level Number')
   levelVersion = models.PositiveIntegerField(default=1, verbose_name='Level Version')
   category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='levels')
+  slug = models.SlugField(max_length=250, unique=True, blank=True)
   sort_order = models.PositiveIntegerField(null=True, blank=True)
 
   class Meta:
-    ordering = ['sort_order']
+    ordering = ['category', 'sort_order']
 
   def __str__(self):
     concat_name = concat_lines(self.levelName)
@@ -78,6 +79,7 @@ class Level(models.Model):
 class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
   name = models.CharField(max_length=250)
+  slug=models.SlugField(max_length=250, unique=True, blank=True)
   line_length = models.PositiveIntegerField(default=20)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
@@ -94,7 +96,7 @@ class Puzzle(models.Model):
     default=None, )
 
   class Meta:
-    ordering = ['puzzle_number']
+    ordering = ['level__category', 'level', 'puzzle_number']
 
   def __repr__(self):
     clue = self.full_clue()

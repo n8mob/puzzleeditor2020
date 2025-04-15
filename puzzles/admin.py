@@ -67,13 +67,15 @@ class PuzzleAdmin(admin.ModelAdmin):
       url = reverse('admin:puzzles_dailypuzzle_change', args=[daily_puzzle.id])
       return format_html(f'<a href="{url}">{daily_puzzle.date}</a>')
 
+  def level_category(self, puzzle):
+    return puzzle.level.category.menu.name if puzzle.level.category else ''
+
   daily_puzzle_link.short_description = 'Puzzle on Date'
 
-  list_display = ['puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue', 'type', 'encoding']
+  list_display = ['level_category', 'level', 'puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue', 'type', 'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
-  list_filter = ['level', 'level__category', 'type', 'encoding']
+  list_filter = ['level__category__menu', 'level__category', 'level', 'type', 'encoding']
   list_display_links = ['name', 'short_clue']
-  ordering = ('puzzle_number',)
 
 
 class LevelNameLinePresenter(BaseLineEditor):
@@ -131,10 +133,10 @@ class LevelAdmin(admin.ModelAdmin):
   puzzle_count.short_description = 'Puzzle Count'
 
   list_editable = ['category', 'sort_order']
-  list_display = ['levelNumber', 'sort_order', 'levelVersion', 'level_name', 'category', 'puzzle_count']
+  list_display = ['category', 'sort_order', 'levelNumber', 'levelVersion', 'level_name', 'puzzle_count']
   list_display_links = ['levelNumber', 'level_name']
   list_filter = ['category', 'category__menu']
-  fields = ['levelNumber', 'levelVersion', 'category']
+  fields = ['sort_order', 'levelNumber', 'levelVersion', 'category']
   ordering = ['category', 'sort_order']
 
 
