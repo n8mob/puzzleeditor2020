@@ -20,6 +20,5 @@ class Command(BaseCommand):
                 f"Puzzle {puzzle.id}: {puzzle.name} → {slug}"
             )
 
-            # Uncomment if/when you add a real SlugField
-            # puzzle.slug = slug
-            # puzzle.save()
+            puzzle.slug = slug
+            puzzle.save()

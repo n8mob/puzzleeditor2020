@@ -21,6 +21,5 @@ class Command(BaseCommand):
                 f"Level {level.levelNumber}: {base_name} →\t{slug}"
             )
 
-            # Uncomment to save it (after adding Level.slug = SlugField(...))
-            # level.slug = slug
-            # level.save()
+            level.slug = slug
+            level.save()
