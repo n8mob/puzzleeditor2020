@@ -41,6 +41,7 @@ class PuzzleSerializer(serializers.ModelSerializer):
     fields = [
       'id',
       'puzzleName',
+      'slug',
       'type',
       'encoding_name',
       'init',
@@ -62,6 +63,7 @@ class LevelSerializer(serializers.ModelSerializer):
     model = Level
     fields = [
       'levelName',
+      'slug',
       'levelNumber',
       'levelVersion',
       'sort_order',
