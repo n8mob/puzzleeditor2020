@@ -1,0 +1,29 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="puzzleeditor2020-local" type="Python.DjangoServer" factoryName="Django server">
+    <module name="MAGiE Web" />
+    <option name="ENV_FILES" value="" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="APP_ENVIRONMENT" value="local" />
+      <env name="DJANGO_SECRET_KEY" value="OEjY9%TA9%HF4Ud09eCuOpnFeKvpLj2i&amp;mdz209FbVfoxDF7XK" />
+      <env name="DJANGO_SETTINGS_MODULE" value="magie_online.settings.local" />
+    </envs>
+    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <option name="IS_MODULE_SDK" value="true" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <option name="launchJavascriptDebuger" value="false" />
+    <option name="port" value="62443" />
+    <option name="host" value="" />
+    <option name="additionalOptions" value="" />
+    <option name="browserUrl" value="http://puzzleeditor2020.local:62443/admin/" />
+    <option name="runTestServer" value="false" />
+    <option name="runNoReload" value="false" />
+    <option name="useCustomRunCommand" value="false" />
+    <option name="customRunCommand" value="" />
+    <method v="2" />
+  </configuration>
+</component>
