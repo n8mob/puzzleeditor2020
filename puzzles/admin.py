@@ -66,6 +66,7 @@ class PuzzleAdmin(admin.ModelAdmin):
     if daily_puzzle:
       url = reverse('admin:puzzles_dailypuzzle_change', args=[daily_puzzle.id])
       return format_html(f'<a href="{url}">{daily_puzzle.date}</a>')
+    return ''
 
   def level_category(self, puzzle):
     return puzzle.level.category.menu.name if puzzle.level.category else ''
