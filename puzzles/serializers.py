@@ -39,9 +39,9 @@ class PuzzleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Puzzle
     fields = [
+      'slug',
       'id',
       'puzzleName',
-      'slug',
       'type',
       'encoding_name',
       'init',
