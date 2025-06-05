@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.utils.text import slugify
+
 CHOICE_TYPE_LENGTH = 32
 
 DECODE_TYPE = 'Decode'
@@ -67,6 +69,17 @@ class Level(models.Model):
   category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='levels')
   slug = models.SlugField(max_length=250, unique=True, blank=True)
   sort_order = models.PositiveIntegerField(null=True, blank=True)
+
+  def generate_default_slug(self):
+    # Use the concatenated name lines or fallback to level number
+    base_name = str(self)
+    raw_slug = slugify(base_name)
+    return raw_slug[:250] if raw_slug else f'level-{self.levelNumber}'
+
+  def save(self, *args, **kwargs):
+    if not self.slug:
+      self.slug = self.generate_default_slug()
+    super().save(*args, **kwargs)
 
   class Meta:
     ordering = ['category', 'sort_order']

@@ -136,7 +136,7 @@ class LevelAdmin(admin.ModelAdmin):
   list_display = ['category', 'sort_order', 'levelNumber', 'levelVersion', 'level_name', 'puzzle_count']
   list_display_links = ['levelNumber', 'level_name']
   list_filter = ['category', 'category__menu']
-  fields = ['sort_order', 'levelNumber', 'levelVersion', 'category']
+  fields = ['sort_order', 'levelNumber', 'levelVersion', 'category', 'slug']
   ordering = ['category', 'sort_order']
 
 
