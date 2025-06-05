@@ -252,11 +252,20 @@ class DateRangeFilter(SimpleListFilter):
 
 
 @admin.register(DailyPuzzle)
+
 class DailyPuzzleAdmin(admin.ModelAdmin):
-  form = DailyPuzzleForm
-  list_display = ['date', 'puzzle']
-  list_filter = [DateRangeFilter]
-  ordering = ['date']
+    form = DailyPuzzleForm
+    list_display = ['date', 'puzzle_link']
+    list_filter = [DateRangeFilter]
+    ordering = ['date']
+
+    def puzzle_link(self, obj):
+        if obj.puzzle:
+            url = reverse('admin:puzzles_puzzle_change', args=[obj.puzzle.id])
+            return format_html('<a href="{}">{}</a>', url, obj.puzzle)
+        return "—"
+    puzzle_link.short_description = 'Puzzle'
+    puzzle_link.admin_order_field = 'puzzle'
 
   class Media:
     js = ('js/daily_puzzle_form.js',)
