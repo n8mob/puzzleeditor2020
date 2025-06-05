@@ -16,11 +16,11 @@ FIXED = 'fixed'
 VARIABLE = 'variable'
 OTHER = 'other'
 
-ENCODING_TYPE_CHOICES = {
-  FIXED: 'Fixed',
-  VARIABLE: 'Variable',
-  OTHER: 'Other'
-}
+ENCODING_TYPE_CHOICES = [
+  (FIXED, 'Fixed'),
+  (VARIABLE, 'Variable'),
+  (OTHER, 'Other')
+]
 
 
 def concat_lines(relation):
@@ -100,7 +100,7 @@ class Level(models.Model):
 class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
   name = models.CharField(max_length=250)
-  slug=models.SlugField(max_length=250, unique=True, blank=True)
+  slug = models.SlugField(max_length=250, unique=True, blank=True)
   line_length = models.PositiveIntegerField(default=20)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
@@ -125,7 +125,8 @@ class Puzzle(models.Model):
       clue = clue[:25] + '...'
     return f'{clue} {self.type} {self.encoding} ("{self.name}")'
 
-  def __str__(self): return self.__repr__()
+  def __str__(self):
+    return self.__repr__()
 
   def full_clue(self):
     return concat_lines(self.clue)
@@ -154,7 +155,7 @@ class ClueLine(Line):
     related_name='clue',
     null=True,
     default=None
-    )
+  )
 
   def save(self, *args, **kwargs):
     if not self.sort_order:
@@ -171,7 +172,7 @@ class WinMessageLine(Line):
     related_name='winMessage',
     null=True,
     default=None
-    )
+  )
 
 
 class LevelNameLine(Line):
@@ -181,7 +182,7 @@ class LevelNameLine(Line):
     related_name='levelName',
     null=True,
     default=None
-    )
+  )
 
 
 class DailyPuzzle(models.Model):
@@ -190,5 +191,3 @@ class DailyPuzzle(models.Model):
 
   def encoding(self):
     return self.puzzle.encoding
-
-

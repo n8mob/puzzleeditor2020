@@ -9,6 +9,7 @@ from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, Lev
 SORT_ORDER = 'sort_order'
 DEFAULT_ENCODING = 'AlphaLengthA1'
 
+
 class ClueLineSerializer(serializers.ModelSerializer):
   class Meta:
     model = ClueLine
@@ -98,7 +99,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class EncodingSerializer(serializers.ModelSerializer):
   type = serializers.CharField(source='encoding_type')
 
-
   class Meta:
     model = Encoding
     fields = [
@@ -169,7 +169,7 @@ class MenuSerializer(serializers.ModelSerializer):
             self.log.error(
               f'Level {level["levelNumber"]} already exists and names do not match'
               + f'\n\t(existing: {existing}, new: {new_level_name})'
-              )
+            )
           else:
             self.log.info(
               f'Level {level["levelNumber"]} already exists ({existing})'
