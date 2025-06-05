@@ -57,7 +57,8 @@ ALLOWED_HOSTS = [
   'puzzles.magiegame.com',
   'd1ocrz2zrz8geq.cloudfront.net',
   '100.20.81.239',
-  'localhost'
+  'localhost',
+  'puzzleeditor.local',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
