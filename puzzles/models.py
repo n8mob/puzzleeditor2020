@@ -77,9 +77,17 @@ class Level(models.Model):
     return raw_slug[:250] if raw_slug else f'level-{self.levelNumber}'
 
   def save(self, *args, **kwargs):
+    # If the object is new and has no PK, save it first to get the PK
+    if not self.pk:
+      super().save(*args, **kwargs)
+    # Now generate the slug if needed
     if not self.slug:
       self.slug = self.generate_default_slug()
-    super().save(*args, **kwargs)
+      # Save again only if the slug was just set
+      super().save(update_fields=['slug'])
+    else:
+      # If slug already exists, just save as normal
+      super().save(*args, **kwargs)
 
   class Meta:
     ordering = ['category', 'sort_order']
