@@ -262,6 +262,9 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
   list_filter = [DateRangeFilter]
   ordering = ['date']
 
+  class Media:
+    js = ('js/daily_puzzle_form.js',)
+
   def puzzle_link(self, obj):
     if obj.puzzle:
       url = reverse('admin:puzzles_puzzle_change', args=[obj.puzzle.id])
@@ -270,10 +273,6 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
 
   puzzle_link.short_description = 'Puzzle'
   puzzle_link.admin_order_field = 'puzzle'
-
-
-class Media:
-  js = ('js/daily_puzzle_form.js',)
 
 
 def formfield_for_foreignkey(self, db_field, request, **kwargs):
