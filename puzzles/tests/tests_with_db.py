@@ -1,9 +1,28 @@
+from puzzles.models import Level, Category
 from django.test import TestCase
 
 from puzzles.models import ClueLine, Puzzle
 
 
 class TestsWithDb(TestCase):
+
+    def test_level_slug_autopopulates_from_name(self):
+        cat = Category.objects.create(name="TestCat")
+        level = Level.objects.create(category=cat)
+        # Add a LevelNameLine to provide a name
+        level.levelName.create(text="Chapter 3: Meeting Up with Hepi")
+        # Save again to trigger slug generation from name
+        level.save()
+        self.assertTrue(level.slug)
+        self.assertIn("chapter-3-meeting-up-with-hepi", level.slug)
+
+    def test_level_slug_fallback_to_level_number(self):
+        cat = Category.objects.create(name="TestCat2")
+        level = Level.objects.create(category=cat)
+        # No LevelNameLine, so fallback should use level number
+        level.save()
+        self.assertTrue(level.slug)
+        self.assertIn(str(level.levelNumber), level.slug)
     def test_line_creates(self):
         actual = ClueLine.objects.create(text='')
 
