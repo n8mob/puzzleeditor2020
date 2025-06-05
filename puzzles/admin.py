@@ -10,8 +10,9 @@ from django.utils.translation import gettext_lazy as _
 
 from char_counter.widget import CharCounterTextInput
 from puzzles.forms import DailyPuzzleForm
-from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, \
-  WinMessageLine
+from puzzles.models import (
+    Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, WinMessageLine
+)
 from puzzles.serializers import MenuSerializer
 
 
