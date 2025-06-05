@@ -10,7 +10,8 @@ from django.utils.translation import gettext_lazy as _
 
 from char_counter.widget import CharCounterTextInput
 from puzzles.forms import DailyPuzzleForm
-from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, WinMessageLine
+from puzzles.models import Category, ClueLine, DailyPuzzle, Encoding, Level, LevelNameLine, Menu, MenuFile, Puzzle, \
+  WinMessageLine
 from puzzles.serializers import MenuSerializer
 
 
@@ -72,7 +73,8 @@ class PuzzleAdmin(admin.ModelAdmin):
 
   daily_puzzle_link.short_description = 'Puzzle on Date'
 
-  list_display = ['level_category', 'level', 'puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue', 'type', 'encoding']
+  list_display = ['level_category', 'level', 'puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue',
+                  'type', 'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
   list_filter = ['level__category__menu', 'level__category', 'level', 'type', 'encoding']
   list_display_links = ['name', 'short_clue']
@@ -121,7 +123,7 @@ class PuzzleInline(admin.TabularInline):
 class LevelAdmin(admin.ModelAdmin):
   readonly_fields = ['levelNumber', 'level_name']
   inlines = [LevelNameLineInline, PuzzleInline]
-  
+
   @staticmethod
   def level_name(level):
     return str(level)
@@ -238,7 +240,8 @@ class DateRangeFilter(SimpleListFilter):
       return queryset.filter(date__range=(first_day_this_week, today))
     elif self.value() == 'this_month':
       first_day_this_month = today.replace(day=1)
-      last_day_this_month = (first_day_this_month + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
+      last_day_this_month = (first_day_this_month + datetime.timedelta(days=32)).replace(
+        day=1) - datetime.timedelta(days=1)
       return queryset.filter(date__range=(first_day_this_month, last_day_this_month))
     elif self.value() == 'next_week':
       next_week_start = today + datetime.timedelta(days=(7 - today.weekday()))
@@ -246,57 +249,60 @@ class DateRangeFilter(SimpleListFilter):
       return queryset.filter(date__range=(next_week_start, next_week_end))
     elif self.value() == 'next_month':
       first_day_next_month = (today.replace(day=1) + datetime.timedelta(days=32)).replace(day=1)
-      last_day_next_month = (first_day_next_month + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
+      last_day_next_month = (first_day_next_month + datetime.timedelta(days=32)).replace(
+        day=1) - datetime.timedelta(days=1)
       return queryset.filter(date__range=(first_day_next_month, last_day_next_month))
     return queryset
 
 
 @admin.register(DailyPuzzle)
-
 class DailyPuzzleAdmin(admin.ModelAdmin):
-    form = DailyPuzzleForm
-    list_display = ['date', 'puzzle_link']
-    list_filter = [DateRangeFilter]
-    ordering = ['date']
+  form = DailyPuzzleForm
+  list_display = ['date', 'puzzle_link']
+  list_filter = [DateRangeFilter]
+  ordering = ['date']
 
-    def puzzle_link(self, obj):
-        if obj.puzzle:
-            url = reverse('admin:puzzles_puzzle_change', args=[obj.puzzle.id])
-            return format_html('<a href="{}">{}</a>', url, obj.puzzle)
-        return "—"
-    puzzle_link.short_description = 'Puzzle'
-    puzzle_link.admin_order_field = 'puzzle'
+  def puzzle_link(self, obj):
+    if obj.puzzle:
+      url = reverse('admin:puzzles_puzzle_change', args=[obj.puzzle.id])
+      return format_html('<a href="{}">{}</a>', url, obj.puzzle)
+    return "—"
 
-  class Media:
-    js = ('js/daily_puzzle_form.js',)
+  puzzle_link.short_description = 'Puzzle'
+  puzzle_link.admin_order_field = 'puzzle'
 
-  def formfield_for_foreignkey(self, db_field, request, **kwargs):
-    if db_field.name == 'puzzle':
-      if request.POST.get('level'):
-        level_id = request.POST.get('level')
-        kwargs['queryset'] = Puzzle.objects.filter(level_id=level_id)
-      else:
-        kwargs['queryset'] = Puzzle.objects.none()
-    return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-  def render_change_form(self, request, context, *args, **kwargs):
-    if context.get('original') and context['original'].puzzle:
-      # Access the puzzle through the original object
-      puzzle = context['original'].puzzle
-      level = puzzle.level
-      category = level.category
-      menu = category.menu
+class Media:
+  js = ('js/daily_puzzle_form.js',)
 
-      # Set initial values for the form fields
-      context['adminform'].form.initial['menu'] = menu.id
-      context['adminform'].form.initial['category'] = category.id
-      context['adminform'].form.initial['level'] = level.levelNumber
-      context['adminform'].form.initial['puzzle'] = puzzle.id
 
-      # Set data attributes for JavaScript
-      context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
-      context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
-      context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
-      context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
-    return super().render_change_form(request, context, *args, **kwargs)
+def formfield_for_foreignkey(self, db_field, request, **kwargs):
+  if db_field.name == 'puzzle':
+    if request.POST.get('level'):
+      level_id = request.POST.get('level')
+      kwargs['queryset'] = Puzzle.objects.filter(level_id=level_id)
+    else:
+      kwargs['queryset'] = Puzzle.objects.none()
+  return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+
+def render_change_form(self, request, context, *args, **kwargs):
+  if context.get('original') and context['original'].puzzle:
+    # Access the puzzle through the original object
+    puzzle = context['original'].puzzle
+    level = puzzle.level
+    category = level.category
+    menu = category.menu
+
+    # Set initial values for the form fields
+    context['adminform'].form.initial['menu'] = menu.id
+    context['adminform'].form.initial['category'] = category.id
+    context['adminform'].form.initial['level'] = level.levelNumber
+    context['adminform'].form.initial['puzzle'] = puzzle.id
+
+    # Set data attributes for JavaScript
+    context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
+    context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
+    context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
+    context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
+  return super().render_change_form(request, context, *args, **kwargs)

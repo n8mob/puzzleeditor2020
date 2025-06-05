@@ -16,11 +16,11 @@ FIXED = 'fixed'
 VARIABLE = 'variable'
 OTHER = 'other'
 
-ENCODING_TYPE_CHOICES = {
-  FIXED: 'Fixed',
-  VARIABLE: 'Variable',
-  OTHER: 'Other'
-}
+ENCODING_TYPE_CHOICES = [
+  (FIXED, 'Fixed'),
+  (VARIABLE, 'Variable'),
+  (OTHER, 'Other')
+]
 
 
 def concat_lines(relation):
