@@ -161,7 +161,6 @@ class ClueLine(Line):
     if not self.sort_order:
       self.sort_order = self.clue_in.clue.count()
 
-    self.text = self.text.upper()
     super().save(*args, **kwargs)
 
 
@@ -191,3 +190,11 @@ class DailyPuzzle(models.Model):
 
   def encoding(self):
     return self.puzzle.encoding
+
+  @property
+  def get_menu_name(self):
+    if self.puzzle and self.puzzle.level and self.puzzle.level.category and self.puzzle.level.category.menu:
+      return self.puzzle.level.category.menu.name
+    return None
+
+
