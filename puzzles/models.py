@@ -82,11 +82,7 @@ class Level(models.Model):
       super().save(*args, **kwargs)
     # Now generate the slug if needed
     if (
-      (not self.slug)
-      or
-      (self.levelName and len(self.levelName > 0)
-       and
-       self.slug == f'level-{self.levelNumber}')
+      self.should_update_slug()
     ):
       self.slug = self.generate_default_slug()
       # Save again only if the slug was just set
@@ -94,6 +90,14 @@ class Level(models.Model):
     else:
       # If slug already exists, just save as normal
       super().save(*args, **kwargs)
+
+  def should_update_slug(self):
+    if not self.slug:
+      return True
+
+    return (self.levelName and len(self.levelName > 0)
+     and
+     self.slug == f'level-{self.levelNumber}')
 
   class Meta:
     ordering = ['category', 'sort_order']
