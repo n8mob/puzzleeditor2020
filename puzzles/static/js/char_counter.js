@@ -107,6 +107,7 @@ class CharCounter {
 		const newInputs = event.target.querySelectorAll(charCounter.inputSelector);
 		newInputs.forEach(input => {
 			charCounter.attachToInput(input);
+			charCounter.updateCharCountLabel(input);
 		});
 	});
 })();
