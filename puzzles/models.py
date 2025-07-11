@@ -84,7 +84,7 @@ class Level(models.Model):
     if (
       (not self.slug)
       or
-      (self.levelName and self.levelName.count() > 0
+      (self.levelName and len(self.levelName > 0)
        and
        self.slug == f'level-{self.levelNumber}')
     ):
