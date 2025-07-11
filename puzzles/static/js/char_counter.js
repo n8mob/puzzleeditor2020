@@ -9,11 +9,11 @@ class CharCounter {
 	onDomLoaded() {
 		this.lineInputs = this.selectLineInputs();
 		this.lineLengthInput = this.selectLineLengthInput();
+		this.lineLength = this.lineLengthInput.value;
 
 		this.listenForLineChanges();
 		this.listenForLineLengthChanges();
 
-		this.lineLength = this.lineLengthInput.value;
 		this.updateLineLabels();
 	}
 
@@ -31,8 +31,12 @@ class CharCounter {
 
 	listenForLineChanges() {
 		this.lineInputs.forEach(input => {
-			input.addEventListener('input', this.onLineChange.bind(this));
+			this.attachToInput(input);
 		})
+	}
+
+	attachToInput(input) {
+		input.addEventListener('input', this.onLineChange.bind(this));
 	}
 
 	listenForLineLengthChanges() {
@@ -96,5 +100,14 @@ class CharCounter {
 
 	document.addEventListener('DOMContentLoaded', () => {
 		charCounter.onDomLoaded();
+	});
+
+	document.addEventListener('formset:added', (event) =>
+	{
+		const newInputs = event.target.querySelectorAll(charCounter.inputSelector);
+		newInputs.forEach(input => {
+			charCounter.attachToInput(input);
+			charCounter.updateCharCountLabel(input);
+		});
 	});
 })();
