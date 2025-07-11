@@ -71,7 +71,9 @@ class PuzzleAdmin(admin.ModelAdmin):
     return None
 
   def level_category(self, puzzle):
-    return f'{puzzle.level.category.menu.name}/{puzzle.level.category.name}' if puzzle.level.category else ''
+    if puzzle.level.category and puzzle.level.category.menu:
+      return f'{puzzle.level.category.menu.name}/{puzzle.level.category.name}'
+    return ''
 
   daily_puzzle_link.short_description = 'Puzzle on Date'
 
