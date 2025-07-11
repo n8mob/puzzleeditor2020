@@ -81,7 +81,13 @@ class Level(models.Model):
     if not self.pk:
       super().save(*args, **kwargs)
     # Now generate the slug if needed
-    if not self.slug:
+    if (
+      (not self.slug)
+      or
+      (self.levelName and self.levelName.count() > 0
+       and
+       self.slug == f'level-{self.levelNumber}')
+    ):
       self.slug = self.generate_default_slug()
       # Save again only if the slug was just set
       super().save(update_fields=['slug'])
@@ -192,9 +198,7 @@ class DailyPuzzle(models.Model):
     return self.puzzle.encoding
 
   @property
-  def get_menu_name(self):
+  def menu_name(self):
     if self.puzzle and self.puzzle.level and self.puzzle.level.category and self.puzzle.level.category.menu:
       return self.puzzle.level.category.menu.name
     return None
-
-
