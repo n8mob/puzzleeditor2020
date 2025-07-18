@@ -111,7 +111,7 @@ class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
   name = models.CharField(max_length=250)
   slug = models.SlugField(max_length=250, unique=True, blank=True)
-  line_length = models.PositiveIntegerField(default=20)
+  line_length = models.PositiveIntegerField(default=24)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
