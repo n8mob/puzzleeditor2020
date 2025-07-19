@@ -3,6 +3,7 @@ import os
 
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -77,6 +78,11 @@ CORS_ALLOWED_ORIGINS = [
   'https://100.20.81.239',
   'http://100.20.81.239'
 ]
+
+CORS_ALLOWED_HEADERS = list(default_headers) + [
+  'if-modified-since'
+]
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
