@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from django.utils.text import slugify
 
@@ -39,7 +40,7 @@ class Encoding(models.Model):
 class Menu(models.Model):
   encodings = models.ManyToManyField(Encoding)
   name = models.SlugField(max_length=250, null=True, blank=True)
-  menuVersion = models.PositiveIntegerField(default=1)
+  updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self):
     return self.name
@@ -145,6 +146,27 @@ class Puzzle(models.Model):
   def encoding_name(self):
     return self.encoding.encoding_id if self.encoding else 'No encoding selected'
 
+  def save(self, *args, **kwargs):
+    if not self.name:
+      self.name = f'{self.puzzle_number}. {self.full_clue()[:30]}'
+
+    if not self.slug:
+      raw_slug = slugify(self.name)
+      if not raw_slug:
+        raw_slug = f'{self.level.slug}-puzzle-{self.puzzle_number}'
+
+      self.slug = raw_slug[:250]
+
+    menu = getattr(getattr(getattr(self, 'level', None), 'category', None), 'menu', None)
+    if menu:
+      menu.updated_at = timezone.now()
+      menu.save()
+    daily_puzzle = getattr(self, 'puzzle_on_date', None)
+    if daily_puzzle:
+      daily_puzzle.updated_at = timezone.now()
+      daily_puzzle.save()
+
+
 
 class Line(models.Model):
   text = models.CharField(max_length=80)
@@ -171,6 +193,10 @@ class ClueLine(Line):
     if not self.sort_order:
       self.sort_order = self.clue_in.clue.count()
 
+    menu = getattr(getattr(getattr(getattr(self, 'clue_in', None), 'level', None), 'category', None), 'menu', None)
+    menu.updated_at = timezone.now()
+    menu.save()
+
     super().save(*args, **kwargs)
 
 
@@ -183,6 +209,17 @@ class WinMessageLine(Line):
     default=None
   )
 
+  def save(self, *args, **kwargs):
+    if not self.sort_order:
+      self.sort_order = self.win_message_in.winMessage.count()
+
+    menu = getattr(getattr(getattr(getattr(self, 'win_message_in', None), 'level', None), 'category', None), 'menu', None)
+    if menu:
+      menu.updated_at = timezone.now()
+      menu.save()
+
+    super().save(*args, **kwargs)
+
 
 class LevelNameLine(Line):
   level_name_of = models.ForeignKey(
@@ -193,10 +230,22 @@ class LevelNameLine(Line):
     default=None
   )
 
+  def save(self, *args, **kwargs):
+    if not self.sort_order:
+      self.sort_order = self.level_name_of.levelName.count()
+
+    menu = getattr(getattr(getattr(self, 'levelName', None), 'category', None), 'menu', None)
+    if menu:
+      menu.updated_at = timezone.now()
+      menu.save()
+
+    super().save(*args, **kwargs)
+
 
 class DailyPuzzle(models.Model):
   date = models.DateField(null=False, blank=False, unique=True)
   puzzle = models.ForeignKey(Puzzle, on_delete=models.SET_NULL, related_name='puzzle_on_date', null=True, blank=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   def encoding(self):
     return self.puzzle.encoding

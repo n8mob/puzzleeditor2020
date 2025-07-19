@@ -1,6 +1,9 @@
 import datetime
+import time
 import zoneinfo
 
+from django.utils.http import http_date
+from django.views.decorators.http import last_modified
 from rest_framework import generics
 from rest_framework.response import Response
 
@@ -17,6 +20,26 @@ class MenuDetailView(generics.RetrieveAPIView):
   queryset = Menu.objects.all()
   serializer_class = MenuSerializer
   lookup_field = 'name'
+
+  def get(self, request, *args, **kwargs):
+    instance: Menu = self.get_object()
+    updated_at = instance.updated_at.timestamp()
+    updated_at_http = http_date(updated_at)
+
+    if_modified_since = request.META.get('HTTP_IF_MODIFIED_SINCE')
+    if if_modified_since:
+      try:
+        since_ts = time.mktime(time.strptime(if_modified_since, "%a, %d %b %Y %H:%M:%S %Z"))
+        if int(since_ts) >= int(updated_at):
+          return Response(status=304)
+      except Exception:
+        # ignore
+        pass
+
+    serializer = self.get_serializer(instance)
+    response = Response(serializer.data)
+    response.headers['Last-Modified'] = updated_at_http
+    return response
 
 
 class LevelsListView(generics.ListCreateAPIView):

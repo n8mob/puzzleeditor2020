@@ -124,7 +124,7 @@ class MenuSerializer(serializers.ModelSerializer):
     model = Menu
     fields = [
       'name',
-      'menuVersion',
+      'updated_at',
       'encodings',
       'categories'
     ]
