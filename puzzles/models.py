@@ -157,6 +157,8 @@ class Puzzle(models.Model):
 
       self.slug = raw_slug[:250]
 
+    super().save(*args, **kwargs)
+
     menu = getattr(getattr(getattr(self, 'level', None), 'category', None), 'menu', None)
     if menu:
       menu.updated_at = timezone.now()
@@ -194,11 +196,12 @@ class ClueLine(Line):
     if not self.sort_order:
       self.sort_order = self.clue_in.clue.count()
 
+    super().save(*args, **kwargs)
+
     menu = getattr(getattr(getattr(getattr(self, 'clue_in', None), 'level', None), 'category', None), 'menu', None)
     menu.updated_at = timezone.now()
     menu.save()
 
-    super().save(*args, **kwargs)
 
 
 class WinMessageLine(Line):
@@ -214,12 +217,12 @@ class WinMessageLine(Line):
     if not self.sort_order:
       self.sort_order = self.win_message_in.winMessage.count()
 
+    super().save(*args, **kwargs)
+
     menu = getattr(getattr(getattr(getattr(self, 'win_message_in', None), 'level', None), 'category', None), 'menu', None)
     if menu:
       menu.updated_at = timezone.now()
       menu.save()
-
-    super().save(*args, **kwargs)
 
 
 class LevelNameLine(Line):
@@ -235,12 +238,12 @@ class LevelNameLine(Line):
     if not self.sort_order:
       self.sort_order = self.level_name_of.levelName.count()
 
+    super().save(*args, **kwargs)
+
     menu = getattr(getattr(getattr(self, 'levelName', None), 'category', None), 'menu', None)
     if menu:
       menu.updated_at = timezone.now()
       menu.save()
-
-    super().save(*args, **kwargs)
 
 
 class DailyPuzzle(models.Model):
