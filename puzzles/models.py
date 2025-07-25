@@ -161,10 +161,11 @@ class Puzzle(models.Model):
     if menu:
       menu.updated_at = timezone.now()
       menu.save()
-    daily_puzzle = getattr(self, 'puzzle_on_date', None)
-    if daily_puzzle:
-      daily_puzzle.updated_at = timezone.now()
-      daily_puzzle.save()
+    daily_puzzle_manger = getattr(self, 'puzzle_on_date', None)
+    if daily_puzzle_manger:
+      for daily_puzzle in daily_puzzle_manger.all():
+        daily_puzzle.updated_at = timezone.now()
+        daily_puzzle.save()
 
 
 
