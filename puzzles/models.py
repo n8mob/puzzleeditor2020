@@ -82,9 +82,7 @@ class Level(models.Model):
     if not self.pk:
       super().save(*args, **kwargs)
     # Now generate the slug if needed
-    if (
-      self.should_update_slug()
-    ):
+    if self.should_update_slug():
       self.slug = self.generate_default_slug()
       # Save again only if the slug was just set
       super().save(update_fields=['slug'])
@@ -96,9 +94,8 @@ class Level(models.Model):
     if not self.slug:
       return True
 
-    return (self.levelName and len(self.levelName > 0)
-     and
-     self.slug == f'level-{self.levelNumber}')
+    return self.levelName.exists() and self.slug == f'level-{self.levelNumber}'
+
 
   class Meta:
     ordering = ['category', 'sort_order']
@@ -140,7 +137,7 @@ class Puzzle(models.Model):
     return self.__repr__()
 
   def full_clue(self):
-    return concat_lines(self.clue)
+    return concat_lines(getattr(self, 'clue'))
 
   @property
   def encoding_name(self):
