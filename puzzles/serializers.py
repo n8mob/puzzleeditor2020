@@ -161,7 +161,7 @@ class MenuSerializer(serializers.ModelSerializer):
         level_name_lines = level.pop('levelName')
         if SORT_ORDER not in level:
           level[SORT_ORDER] = given_level_order
-        if Level.objects.filter(levelNumber=level['levelNumber']).exists():
+        if level.get('levelNumber') and Level.objects.filter(levelNumber=level['levelNumber']).exists():
           existing = str(Level.objects.get(levelNumber=level["levelNumber"]))
           new_level_name = ' '.join(level_name_lines)
 
@@ -215,4 +215,4 @@ class DailyPuzzleSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = DailyPuzzle
-    fields = '__all__'
+    fields = ['date', 'puzzle', 'updated_at', 'encoding', 'menu_name']
