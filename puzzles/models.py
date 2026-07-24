@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import Manager, QuerySet
-from django.utils import timezone
 
 from django.utils.text import slugify
 
@@ -75,7 +74,6 @@ class Category(models.Model):
     super().save(*args, **kwargs)
 
     if self.menu:
-      self.menu.updated_at = timezone.now()
       self.menu.save()
 
   def __str__(self):
@@ -114,7 +112,6 @@ class Level(models.Model):
       super().save(*args, **kwargs)
 
     if self.category:
-      self.category.updated_at = timezone.now()
       self.category.save()
 
   def should_update_slug(self):
@@ -206,17 +203,11 @@ class Puzzle(models.Model):
     super().save(*args, **kwargs)
 
     if self.level:
-      self.level.updated_at = timezone.now()
       self.level.save()
 
-    menu = getattr(getattr(getattr(self, 'level', None), 'category', None), 'menu', None)
-    if menu:
-      menu.updated_at = timezone.now()
-      menu.save()
     daily_puzzle_manger = getattr(self, 'puzzle_on_date', None)
     if daily_puzzle_manger:
       for daily_puzzle in daily_puzzle_manger.all():
-        daily_puzzle.updated_at = timezone.now()
         daily_puzzle.save()
 
 
@@ -248,7 +239,6 @@ class ClueLine(Line):
     super().save(*args, **kwargs)
 
     if self.clue_in:
-      self.clue_in.updated_at = timezone.now()
       self.clue_in.save()
 
 
@@ -262,13 +252,12 @@ class WinMessageLine(Line):
   )
 
   def save(self, *args, **kwargs):
-    if not self.sort_order:
+    if not self.sort_order and self.win_message_in:
       self.sort_order = self.win_message_in.winMessage.count()
 
     super().save(*args, **kwargs)
 
     if self.win_message_in:
-      self.win_message_in.updated_at = timezone.now()
       self.win_message_in.save()
 
 
@@ -282,13 +271,12 @@ class LevelNameLine(Line):
   )
 
   def save(self, *args, **kwargs):
-    if not self.sort_order:
+    if not self.sort_order and self.level_name_of:
       self.sort_order = self.level_name_of.levelName.count()
 
     super().save(*args, **kwargs)
 
     if self.level_name_of:
-      self.level_name_of.updated_at = timezone.now()
       self.level_name_of.save()
 
 
