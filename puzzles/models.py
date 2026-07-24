@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Manager, QuerySet
 from django.utils import timezone
 
 from django.utils.text import slugify
@@ -16,7 +17,7 @@ PUZZLE_TYPE_CHOICES = [
 ]
 
 # These values are sent to the game as-is and compared case-sensitively there,
-# so they must stay lowercase (unlike the capitalised puzzle types above).
+# so they must stay lowercase (unlike the capitalized puzzle types above).
 CLOCK_NONE = 'none'
 CLOCK_ADVANCE = 'advance'
 CLOCK_SCROLL = 'scroll'
@@ -38,7 +39,7 @@ ENCODING_TYPE_CHOICES = [
 ]
 
 
-def concat_lines(relation):
+def concat_lines(relation: Manager['Line']):
   return ' '.join(line.text for line in relation.all())
 
 
@@ -70,6 +71,13 @@ class Category(models.Model):
   menu = models.ForeignKey(Menu, null=True, blank=True, on_delete=models.SET_NULL, related_name='categories')
   sort_order = models.PositiveIntegerField(null=True, blank=True)
 
+  def save(self, *args, **kwargs):
+    super().save(*args, **kwargs)
+
+    if self.menu:
+      self.menu.updated_at = timezone.now()
+      self.menu.save()
+
   def __str__(self):
     return self.name
 
@@ -84,6 +92,7 @@ class Level(models.Model):
   category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='levels')
   slug = models.SlugField(max_length=250, unique=True, blank=True)
   sort_order = models.PositiveIntegerField(null=True, blank=True)
+  levelName: models.Manager['LevelNameLine']
 
   def generate_default_slug(self):
     # Use the concatenated name lines or fallback to level number
@@ -103,6 +112,10 @@ class Level(models.Model):
     else:
       # If slug already exists, just save as normal
       super().save(*args, **kwargs)
+
+    if self.category:
+      self.category.updated_at = timezone.now()
+      self.category.save()
 
   def should_update_slug(self):
     if not self.slug:
@@ -127,6 +140,8 @@ class Puzzle(models.Model):
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
+  clue: models.Manager['ClueLine']
+  winMessage: models.Manager['WinMessageLine']
 
   # Chocolate settings. Deliberately nullable with no defaults here: the game
   # already defaults every one of these, so a blank field means "use the game's
@@ -171,17 +186,17 @@ class Puzzle(models.Model):
     return self.__repr__()
 
   def full_clue(self):
-    return concat_lines(getattr(self, 'clue'))
+    if self.clue:
+      return concat_lines(self.clue)
+    else:
+      return ''
 
   @property
   def encoding_name(self):
     return self.encoding.encoding_id if self.encoding else 'No encoding selected'
 
   def save(self, *args, **kwargs):
-    if not self.name:
-      self.name = f'{self.puzzle_number}. {self.full_clue()[:30]}'
-
-    if not self.slug:
+    if not self.slug and self.name:
       raw_slug = slugify(self.name)
       if not raw_slug:
         raw_slug = f'{self.level.slug}-puzzle-{self.puzzle_number}'
@@ -189,6 +204,10 @@ class Puzzle(models.Model):
       self.slug = raw_slug[:250]
 
     super().save(*args, **kwargs)
+
+    if self.level:
+      self.level.updated_at = timezone.now()
+      self.level.save()
 
     menu = getattr(getattr(getattr(self, 'level', None), 'category', None), 'menu', None)
     if menu:
@@ -199,7 +218,6 @@ class Puzzle(models.Model):
       for daily_puzzle in daily_puzzle_manger.all():
         daily_puzzle.updated_at = timezone.now()
         daily_puzzle.save()
-
 
 
 class Line(models.Model):
@@ -224,15 +242,14 @@ class ClueLine(Line):
   )
 
   def save(self, *args, **kwargs):
-    if not self.sort_order:
+    if not self.sort_order and self.clue_in:
       self.sort_order = self.clue_in.clue.count()
 
     super().save(*args, **kwargs)
 
-    menu = getattr(getattr(getattr(getattr(self, 'clue_in', None), 'level', None), 'category', None), 'menu', None)
-    menu.updated_at = timezone.now()
-    menu.save()
-
+    if self.clue_in:
+      self.clue_in.updated_at = timezone.now()
+      self.clue_in.save()
 
 
 class WinMessageLine(Line):
@@ -250,10 +267,9 @@ class WinMessageLine(Line):
 
     super().save(*args, **kwargs)
 
-    menu = getattr(getattr(getattr(getattr(self, 'win_message_in', None), 'level', None), 'category', None), 'menu', None)
-    if menu:
-      menu.updated_at = timezone.now()
-      menu.save()
+    if self.win_message_in:
+      self.win_message_in.updated_at = timezone.now()
+      self.win_message_in.save()
 
 
 class LevelNameLine(Line):
@@ -271,10 +287,9 @@ class LevelNameLine(Line):
 
     super().save(*args, **kwargs)
 
-    menu = getattr(getattr(getattr(self, 'levelName', None), 'category', None), 'menu', None)
-    if menu:
-      menu.updated_at = timezone.now()
-      menu.save()
+    if self.level_name_of:
+      self.level_name_of.updated_at = timezone.now()
+      self.level_name_of.save()
 
 
 class DailyPuzzle(models.Model):

@@ -9,7 +9,7 @@ from puzzles.serializers import ClueLineSerializer, PuzzleSerializer
 class TestSerializers(TestCase):
   def setUp(self):
     self.puzzle1 = Puzzle.objects.create(name='Puzzle 1')
-    self.clue_line1 = ClueLine.objects.create(text='Hello', clue_in=self.puzzle1)
+    self.clue_line1 = ClueLine.objects.create(text='Hello')
     self.line_serializer = ClueLineSerializer(self.clue_line1)
 
   def test_line_serializer_doesnt_barf(self):
@@ -39,9 +39,9 @@ class TestSerializers(TestCase):
     self.assertTrue('Hello', json_data['text'])
 
   def test_add_one_line_to_puzzle(self):
-    self.assertEqual(0, self.puzzle1.clue.count())
-    self.puzzle1.clue.add(self.clue_line1)
-    self.assertEqual(1, self.puzzle1.clue.count())
+    before = self.puzzle1.clue.count()
+    ClueLine.objects.create(text="new clue line", clue_in=self.puzzle1)
+    self.assertEqual(before + 1, self.puzzle1.clue.count())
 
   def test_get_line_back(self):
     self.puzzle1.clue.add(self.clue_line1)
