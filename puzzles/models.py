@@ -7,10 +7,24 @@ CHOICE_TYPE_LENGTH = 32
 
 DECODE_TYPE = 'Decode'
 ENCODE_TYPE = 'Encode'
+CHOCOLATE_TYPE = 'Chocolate'
 
 PUZZLE_TYPE_CHOICES = [
   (DECODE_TYPE, 'Decode'),
-  (ENCODE_TYPE, 'Encode')
+  (ENCODE_TYPE, 'Encode'),
+  (CHOCOLATE_TYPE, 'Chocolate'),
+]
+
+# These values are sent to the game as-is and compared case-sensitively there,
+# so they must stay lowercase (unlike the capitalised puzzle types above).
+CLOCK_NONE = 'none'
+CLOCK_ADVANCE = 'advance'
+CLOCK_SCROLL = 'scroll'
+
+CHOCOLATE_CLOCK_CHOICES = [
+  (CLOCK_NONE, 'Taste — player-paced, no clock'),
+  (CLOCK_ADVANCE, 'Treat — focus auto-advances, timed'),
+  (CLOCK_SCROLL, 'Dessert — conveyor carries letters past a judgment line'),
 ]
 
 FIXED = 'fixed'
@@ -113,6 +127,26 @@ class Puzzle(models.Model):
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
+
+  # Chocolate settings. Deliberately nullable with no defaults here: the game
+  # already defaults every one of these, so a blank field means "use the game's
+  # default" and the defaults stay defined in exactly one place. Setting them
+  # here too would guarantee the two drift apart.
+  # Field names are camelCase to match the JSON the game expects (as winText
+  # above already does), so the serializer needs no source= mapping.
+  clock = models.CharField(
+    max_length=CHOICE_TYPE_LENGTH, choices=CHOCOLATE_CLOCK_CHOICES, null=True, blank=True,
+    help_text='Chocolate only. Blank uses the game default (Dessert).')
+  scrollSpeed = models.FloatField(
+    null=True, blank=True, verbose_name='Scroll speed',
+    help_text='Dessert only. Belt speed in rows per second. Blank uses the game default (0.20).')
+  scrollAccel = models.FloatField(
+    null=True, blank=True, verbose_name='Scroll acceleration',
+    help_text='Dessert only. Rows per second added every 10 judged letters. '
+              'Blank uses the game default (0.04).')
+  maxStrikes = models.PositiveSmallIntegerField(
+    null=True, blank=True, verbose_name='Max strikes',
+    help_text='Dessert only. Missed letters before the run ends. Blank uses the game default (10).')
 
   encoding = models.ForeignKey(Encoding, null=True, blank=True, on_delete=models.SET_NULL, related_name='puzzles')
 

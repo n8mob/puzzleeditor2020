@@ -49,7 +49,13 @@ class PuzzleSerializer(serializers.ModelSerializer):
       'winText',
       'clue',
       'winMessage',
-      'level'
+      'level',
+      # Chocolate settings; null for Encode/Decode puzzles, and null on a
+      # Chocolate puzzle means the game applies its own default.
+      'clock',
+      'scrollSpeed',
+      'scrollAccel',
+      'maxStrikes',
     ]
 
   def create(self, validated_data):
