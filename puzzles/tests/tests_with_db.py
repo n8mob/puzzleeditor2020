@@ -39,8 +39,20 @@ class TestsWithDb(TestCase):
 
         self.assertTrue(actual)
 
+    def test_create_two_puzzles_with_default_values(self):
+      puzzle1 = Puzzle.objects.create()
+      puzzle2 = Puzzle.objects.create()
+
+      self.assertTrue(puzzle1)
+      self.assertTrue(puzzle2)
+
+      # slug is unique, so a generated fallback is what keeps a second
+      # slug-less puzzle from colliding with the first on ''.
+      self.assertEqual(f'puzzle-{puzzle1.pk}', puzzle1.slug)
+      self.assertNotEqual(puzzle1.slug, puzzle2.slug)
+
     def test_puzzle_with_lines(self):
-        p = Puzzle.objects.create(name='Test Puzzle')
+        p = Puzzle.objects.create(slug='test-puzzle')
 
         lines = [
             ClueLine.objects.create(text='Hello,', clue_in=p),

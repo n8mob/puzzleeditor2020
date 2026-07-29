@@ -131,8 +131,7 @@ class Level(models.Model):
 
 class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
-  name = models.CharField(max_length=250)
-  slug = models.SlugField(max_length=250, unique=True, blank=True)
+  slug = models.SlugField(max_length=250, unique=True)
   line_length = models.PositiveIntegerField(default=24)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=50, default='', blank=True)
@@ -177,7 +176,7 @@ class Puzzle(models.Model):
     clue = self.full_clue()
     if len(clue) > 28:
       clue = clue[:25] + '...'
-    return f'{clue} {self.type} {self.encoding} ("{self.name}")'
+    return f'{clue} {self.type} {self.encoding} ("{self.slug}")'
 
   def __str__(self):
     return self.__repr__()
@@ -192,22 +191,28 @@ class Puzzle(models.Model):
   def encoding_name(self):
     return self.encoding.encoding_id if self.encoding else 'No encoding selected'
 
+  def generate_default_slug(self):
+    # Nothing on a new Puzzle makes a good slug: level and puzzle_number are both
+    # nullable, and clue lines don't exist until after the first save. So fall back
+    # to the pk, the way Level falls back to level-{levelNumber}.
+    return f'puzzle-{self.pk}'
+
   def save(self, *args, **kwargs):
-    if not self.slug and self.name:
-      raw_slug = slugify(self.name)
-      if not raw_slug:
-        raw_slug = f'{self.level.slug}-puzzle-{self.puzzle_number}'
-
-      self.slug = raw_slug[:250]
-
     super().save(*args, **kwargs)
 
+    # A blank slug is only ever a placeholder, and it is replaced immediately so
+    # that at most one row holds '' at a time (slug is unique).
+    if not self.slug:
+      self.slug = self.generate_default_slug()
+      super().save(update_fields=['slug'])
+
+    # updated_at on the Menu: this should propagate the save up through the level and on to Menu
     if self.level:
       self.level.save()
 
-    daily_puzzle_manger = getattr(self, 'puzzle_on_date', None)
-    if daily_puzzle_manger:
-      for daily_puzzle in daily_puzzle_manger.all():
+    # updated_at on the Daily Puzzle
+    if self.puzzle_on_date:
+      for daily_puzzle in self.puzzle_on_date.all():
         daily_puzzle.save()
 
 

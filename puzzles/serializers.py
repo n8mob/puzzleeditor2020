@@ -1,6 +1,7 @@
 import logging
 
 from django.db import IntegrityError
+from django.utils.text import slugify
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
@@ -25,7 +26,6 @@ class WinMessageLineSerializer(serializers.ModelSerializer):
 class PuzzleSerializer(serializers.ModelSerializer):
   clue = serializers.StringRelatedField(many=True)
   winMessage = serializers.StringRelatedField(many=True)
-  puzzleName = serializers.CharField(source='name')
   encoding_name = SerializerMethodField(method_name='get_encoding')
 
   @staticmethod
@@ -41,7 +41,6 @@ class PuzzleSerializer(serializers.ModelSerializer):
     model = Puzzle
     fields = [
       'id',
-      'puzzleName',
       'slug',
       'type',
       'encoding_name',
@@ -59,7 +58,7 @@ class PuzzleSerializer(serializers.ModelSerializer):
     ]
 
   def create(self, validated_data):
-    Puzzle.objects.create(**validated_data)
+    return Puzzle.objects.create(**validated_data)
 
 
 class LevelSerializer(serializers.ModelSerializer):
@@ -119,7 +118,7 @@ class MenuSerializer(serializers.ModelSerializer):
   encodings = SerializerMethodField(method_name='get_encodings')
 
   @staticmethod
-  def get_categories(menu):
+  def get_categories(menu: Menu):
     return {c.name: CategorySerializer().to_representation(instance=c) for c in menu.categories.all()}
 
   @staticmethod
@@ -189,7 +188,9 @@ class MenuSerializer(serializers.ModelSerializer):
             win_message_lines = puzzle.pop('winMessage')
 
             if 'puzzleName' in puzzle:
-              puzzle['name'] = puzzle.pop('puzzleName')
+              puzzle_name = puzzle.pop('puzzleName')
+              if 'slug' not in puzzle:
+                puzzle['slug'] = slugify(puzzle_name)
 
             if 'level' in puzzle:
               del puzzle['level']
