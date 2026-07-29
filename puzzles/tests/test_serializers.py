@@ -8,7 +8,7 @@ from puzzles.serializers import ClueLineSerializer, PuzzleSerializer
 
 class TestSerializers(TestCase):
   def setUp(self):
-    self.puzzle1 = Puzzle.objects.create(name='Puzzle 1')
+    self.puzzle1 = Puzzle.objects.create(slug='puzzle-1')
     self.clue_line1 = ClueLine.objects.create(text='Hello')
     self.line_serializer = ClueLineSerializer(self.clue_line1)
 
@@ -55,13 +55,13 @@ class TestSerializers(TestCase):
     puzzle_serializer = PuzzleSerializer(self.puzzle1)
     json_string = json.dumps(puzzle_serializer.data)
 
-    self.assertIn('name', json_string)
+    self.assertIn('slug', json_string)
     self.assertIn('clue', json_string)
     self.assertIn('Hello', json_string)
 
     reconstituted = json.loads(json_string)
     self.assertIn('clue', reconstituted)
-    self.assertIn('puzzleName', reconstituted)
+    self.assertIn('slug', reconstituted)
     self.assertEqual(1, len(reconstituted['clue']))
 
     self.assertEqual('Hello', reconstituted['clue'][0])

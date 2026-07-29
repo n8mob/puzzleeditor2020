@@ -54,6 +54,7 @@ class PuzzleAdmin(admin.ModelAdmin):
   def short_clue(puzzle):
     return str(puzzle.full_clue()[:25])
 
+  # noinspection pep8-naming
   @staticmethod
   def winMessage(puzzle):
     return str(puzzle.winMessage.first().text) if puzzle.winMessage.exists() else ''
@@ -70,18 +71,26 @@ class PuzzleAdmin(admin.ModelAdmin):
       return format_html(f'<a href="{url}">{daily_puzzle.date}</a>')
     return None
 
-  def level_category(self, puzzle):
-    if puzzle.level.category and puzzle.level.category.menu:
+  @staticmethod
+  def level_category(puzzle: Puzzle):
+    if puzzle.level and puzzle.level.category and puzzle.level.category.menu:
       return f'{puzzle.level.category.menu.name}/{puzzle.level.category.name}'
     return ''
 
   daily_puzzle_link.short_description = 'Puzzle on Date'
 
-  list_display = ['level_category', 'level', 'puzzle_number', 'name', 'daily_puzzle_link', 'winMessage', 'short_clue',
-                  'type', 'encoding']
+  list_display = ['level_category',
+    'level',
+    'puzzle_number',
+    'slug',
+    'daily_puzzle_link',
+    'winMessage',
+    'short_clue',
+    'type',
+    'encoding']
   list_editable = ['puzzle_number', 'type', 'encoding']
   list_filter = ['level__category__menu', 'level__category', 'level', 'type', 'encoding']
-  list_display_links = ['name', 'short_clue']
+  list_display_links = ['slug', 'short_clue']
 
 
 class LevelNameLinePresenter(BaseLineEditor):
@@ -114,7 +123,7 @@ class PuzzleInline(admin.TabularInline):
 
   def name_link(self, puzzle):
     puzzle_url = reverse('admin:puzzles_puzzle_change', args=[puzzle.id])
-    return format_html('<a href="{}">{}</a>', puzzle_url, str(puzzle.name))
+    return format_html('<a href="{}">{}</a>', puzzle_url, puzzle.slug)
 
   name_link.short_description = 'Name'
 
@@ -277,16 +286,6 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
 
   puzzle_link.short_description = 'Puzzle'
   puzzle_link.admin_order_field = 'puzzle'
-
-
-def formfield_for_foreignkey(self, db_field, request, **kwargs):
-  if db_field.name == 'puzzle':
-    if request.POST.get('level'):
-      level_id = request.POST.get('level')
-      kwargs['queryset'] = Puzzle.objects.filter(level_id=level_id)
-    else:
-      kwargs['queryset'] = Puzzle.objects.none()
-  return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 def render_change_form(self, request, context, *args, **kwargs):

@@ -53,5 +53,5 @@ def get_puzzles(request):
   level_id = request.GET.get('level_id')
   puzzles = []
   if level_id:
-    puzzles = list(Puzzle.objects.filter(level_id=level_id).values('id', 'name'))
+    puzzles = list(Puzzle.objects.filter(level_id=level_id).values('id', 'slug'))
   return JsonResponse(puzzles, safe=False)

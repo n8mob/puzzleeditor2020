@@ -15,7 +15,7 @@ class TestChocolateFields(TestCase):
 
   def test_chocolate_fields_reach_the_serialized_puzzle(self):
     puzzle = Puzzle.objects.create(
-      name='Chocolate 1',
+      slug='Chocolate-1',
       type=CHOCOLATE_TYPE,
       clock=CLOCK_SCROLL,
       scrollSpeed=0.25,
@@ -36,7 +36,7 @@ class TestChocolateFields(TestCase):
     Null means "use the game's own default", which keeps the defaults defined
     in one place. The game applies them with ??, which treats null as unset.
     """
-    puzzle = Puzzle.objects.create(name='Plain decode puzzle')
+    puzzle = Puzzle.objects.create(slug='plain-decode-puzzle')
 
     data = json.loads(json.dumps(PuzzleSerializer(puzzle).data))
 
