@@ -121,14 +121,8 @@ class PuzzleInline(admin.TabularInline):
 
   clue_link.short_description = 'Clue'
 
-  def name_link(self, puzzle):
-    puzzle_url = reverse('admin:puzzles_puzzle_change', args=[puzzle.id])
-    return format_html('<a href="{}">{}</a>', puzzle_url, puzzle.slug)
-
-  name_link.short_description = 'Name'
-
-  fields = ['puzzle_number', 'name_link', 'clue_link', 'init', 'winText', 'type', 'encoding']
-  readonly_fields = ['name_link', 'clue_link', 'init', 'winText']
+  fields = ['puzzle_number', 'slug', 'clue_link', 'init', 'winText', 'type', 'encoding']
+  readonly_fields = ['clue_link', 'init', 'winText']
   editable_fields = ['puzzle_number', 'type', 'encoding']
 
 
@@ -287,24 +281,23 @@ class DailyPuzzleAdmin(admin.ModelAdmin):
   puzzle_link.short_description = 'Puzzle'
   puzzle_link.admin_order_field = 'puzzle'
 
+  def render_change_form(self, request, context, *args, **kwargs):
+    if context.get('original') and context['original'].puzzle:
+      # Access the puzzle through the original object
+      puzzle = context['original'].puzzle
+      level = puzzle.level
+      category = level.category
+      menu = category.menu
 
-def render_change_form(self, request, context, *args, **kwargs):
-  if context.get('original') and context['original'].puzzle:
-    # Access the puzzle through the original object
-    puzzle = context['original'].puzzle
-    level = puzzle.level
-    category = level.category
-    menu = category.menu
+      # Set initial values for the form fields
+      context['adminform'].form.initial['menu'] = menu.id
+      context['adminform'].form.initial['category'] = category.id
+      context['adminform'].form.initial['level'] = level.levelNumber
+      context['adminform'].form.initial['puzzle'] = puzzle.id
 
-    # Set initial values for the form fields
-    context['adminform'].form.initial['menu'] = menu.id
-    context['adminform'].form.initial['category'] = category.id
-    context['adminform'].form.initial['level'] = level.levelNumber
-    context['adminform'].form.initial['puzzle'] = puzzle.id
-
-    # Set data attributes for JavaScript
-    context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
-    context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
-    context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
-    context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
-  return super().render_change_form(request, context, *args, **kwargs)
+      # Set data attributes for JavaScript
+      context['adminform'].form.fields['menu'].widget.attrs['data-initial'] = menu.id
+      context['adminform'].form.fields['category'].widget.attrs['data-initial'] = category.id
+      context['adminform'].form.fields['level'].widget.attrs['data-initial'] = level.levelNumber
+      context['adminform'].form.fields['puzzle'].widget.attrs['data-initial'] = puzzle.id
+    return super().render_change_form(request, context, *args, **kwargs)
