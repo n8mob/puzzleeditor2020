@@ -1,9 +1,11 @@
 import datetime
 import json
+from urllib.parse import urlencode
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.db import models
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -91,6 +93,38 @@ class PuzzleAdmin(admin.ModelAdmin):
   list_editable = ['puzzle_number', 'type', 'encoding']
   list_filter = ['level__category__menu', 'level__category', 'level', 'type', 'encoding']
   list_display_links = ['slug', 'short_clue']
+
+  def response_add(self, request, obj, post_url_continue=None):
+    return self._save_redirect(request, obj) or super().response_add(request, obj, post_url_continue)
+
+  def response_change(self, request, obj):
+    return self._save_redirect(request, obj) or super().response_change(request, obj)
+
+  @staticmethod
+  def _save_redirect(request, obj):
+    """Overrides the plain "Save" and "Save and add another" redirects so
+    drafting several puzzles in a level doesn't mean re-navigating and
+    re-entering the same fields for every puzzle."""
+    if '_addanother' in request.POST:
+      next_puzzle_fields = {}
+      if obj.level_id:
+        next_puzzle_fields['level'] = obj.level_id
+      if obj.puzzle_number is not None:
+        next_puzzle_fields['puzzle_number'] = obj.puzzle_number + 1
+      if obj.type:
+        next_puzzle_fields['type'] = obj.type
+      if obj.encoding_id:
+        next_puzzle_fields['encoding'] = obj.encoding_id
+
+      url = reverse('admin:puzzles_puzzle_add')
+      if next_puzzle_fields:
+        url = f'{url}?{urlencode(next_puzzle_fields)}'
+      return HttpResponseRedirect(url)
+
+    if '_continue' not in request.POST and '_saveasnew' not in request.POST and obj.level_id:
+      return HttpResponseRedirect(reverse('admin:puzzles_level_change', args=[obj.level_id]))
+
+    return None
 
 
 class LevelNameLinePresenter(BaseLineEditor):
