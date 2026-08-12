@@ -132,7 +132,7 @@ class Level(models.Model):
 class Puzzle(models.Model):
   puzzle_number = models.PositiveSmallIntegerField(null=True, blank=True)
   slug = models.SlugField(max_length=250, unique=True)
-  line_length = models.PositiveIntegerField(default=24)
+  line_length = models.PositiveIntegerField(default=18)
   init = models.CharField(max_length=50, default='', blank=True)
   winText = models.CharField(max_length=250, default='', blank=True)
   type = models.CharField(max_length=CHOICE_TYPE_LENGTH, choices=PUZZLE_TYPE_CHOICES, default=DECODE_TYPE)
